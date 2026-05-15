@@ -208,7 +208,7 @@ docker run -p 8001:8001 --env-file .env oncotriage
 - **Dr. Dawn Stacey** and the COSTaRS team at the University of Ottawa for the open Pan-Canadian Oncology Symptom Triage and Remote Support Practice Guides
 - **National Cancer Institute** for CTCAE v5.0, NCI Thesaurus, and PubMed E-utilities
 - **U.S. FDA** for the OpenFDA FAERS public API
-- This project was developed collaboratively with **Claude Code** (Anthropic) under author direction; clinical decisions, code review, and architecture choices were author-led
+- **Anthropic** for the Claude API used in the NLU layer
 
 ---
 

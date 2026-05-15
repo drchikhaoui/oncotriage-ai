@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+{% block title %}{{ i18n['intake.title'] }}{% endblock %}
+
+{% block content %}
+<div x-data="intakeWizard()" class="space-y-6">
+
+  <!-- Page header -->
+  <div class="text-center max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold text-stone-900">{{ i18n['intake.title'] }}</h1>
+    <p class="mt-2 text-sm text-stone-500">{{ i18n['intake.subtitle'] }}</p>
+  </div>
+
+  <!-- Step indicator -->
+  <div class="flex items-center justify-center gap-2">
+    {% for step_num in [1, 2, 3] %}
+      <div class="flex items-center gap-2">
+        <div :class="currentStep > {{ step_num }} ? 'step-done' : currentStep == {{ step_num }} ? 'step-active' : 'step-pending'">
+          {{ step_num }}
+        </div>
+        <span class="text-xs text-stone-500 hidden sm:inline">
+          {{ i18n['intake.step' ~ step_num] }}
+        </span>
+        {% if not loop.last %}
+          <div class="w-8 h-px bg-stone-300 hidden sm:block"></div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Form -->
+  <form id="intake-form" class="space-y-6" @submit.prevent="submitForm">
+
+    <!-- Step 1: Cancer & Treatment Context -->
+    <div x-show="currentStep === 1" class="card space-y-5">
+      <h2 class="text-lg font-semibold text-stone-800">{{ i18n['intake.step1'] }}</h2>
+
+      <!-- Cancer type -->
+      <div>
+        <label class="label">{{ i18n['intake.cancer_type.label'] }}</label>
+        <select class="select" x-model="form.cancer_type">
+          <option value="">{{ i18n['intake.cancer_type.placeholder'] }}</option>
+          <option value="breast">{{ i18n['intake.cancer_type.breast'] }}</option>
+          <option value="lung">{{ i18n['intake.cancer_type.lung'] }}</option>
+          <option value="colorectal">{{ i18n['intake.cancer_type.colorectal'] }}</option>
+          <option value="prostate">{{ i18n['intake.cancer_type.prostate'] }}</option>
+          <option value="hematologic">{{ i18n['intake.cancer_type.hematologic'] }}</option>
+          <option value="gynecologic">{{ i18n['intake.cancer_type.gynecologic'] }}</option>
+          <option value="head_neck">{{ i18n['intake.cancer_type.head_neck'] }}</option>
+          <option value="other">{{ i18n['intake.cancer_type.other'] }}</option>
+        </select>
+      </div>
+
+      <!-- Treatment modalities (multi-select) -->
+      <div>
+        <label class="label">{{ i18n['intake.treatment.label'] }}</label>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {% set modalities = [
+            ('cytotoxic_chemo', 'intake.treatment.cytotoxic'),
+            ('immunotherapy', 'intake.treatment.immunotherapy'),
+            ('targeted_therapy', 'intake.treatment.targeted'),
+            ('radiation', 'intake.treatment.radiation'),
+            ('hormonal_endocrine', 'intake.treatment.hormonal'),
+            ('car_t', 'intake.treatment.car_t'),
+            ('stem_cell_transplant', 'intake.treatment.transplant'),
+          ] %}
+          {% for value, key in modalities %}
+            <label class="flex items-center gap-2 p-3 border border-stone-200 rounded-lg cursor-pointer hover:bg-stone-50 transition-colors"
+                   :class="form.treatment_modalities.includes('{{ value }}') ? 'border-sage-400 bg-sage-50' : ''">
+              <input type="checkbox" class="accent-sage-500 w-4 h-4"
+                     value="{{ value }}"
+                     @change="toggleModality('{{ value }}')"
+                     :checked="form.treatment_modalities.includes('{{ value }}')">
+              <span class="text-sm text-stone-700">{{ i18n[key] }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Last chemo date (conditional) -->
+      <div x-show="form.treatment_modalities.includes('cytotoxic_chemo') || form.treatment_modalities.includes('car_t') || form.treatment_modalities.includes('stem_cell_transplant')">
+        <label class="label">
+          {{ i18n['intake.last_chemo.label'] }}
+          <span class="text-stone-400 font-normal">{{ i18n['intake.last_chemo.optional'] }}</span>
+        </label>
+        <input type="date" class="input" x-model="form.last_chemo_date"
+               :max="new Date().toISOString().split('T')[0]">
+      </div>
+
+      <!-- Treatment line -->
+      <div>
+        <label class="label">{{ i18n['intake.treatment_line.label'] }}</label>
+        <select class="select" x-model="form.treatment_line">
+          <option value="">—</option>
+          <option value="first">{{ i18n['intake.treatment_line.first'] }}</option>
+          <option value="second">{{ i18n['intake.treatment_line.second'] }}</option>
+          <option value="third_plus">{{ i18n['intake.treatment_line.third_plus'] }}</option>
+          <option value="maintenance">{{ i18n['intake.treatment_line.maintenance'] }}</option>
+          <option value="surveillance">{{ i18n['intake.treatment_line.surveillance'] }}</option>
+        </select>
+      </div>
+
+      <!-- Thrombocytopenia history -->
+      <label class="flex items-center gap-3 cursor-pointer p-3 border border-stone-200 rounded-lg hover:bg-stone-50 transition-colors">
+        <input type="checkbox" class="accent-sage-500 w-4 h-4" x-model="form.thrombocytopenia_history">
+        <span class="text-sm text-stone-700">{{ i18n['intake.platelet_history.label'] }}</span>
+      </label>
+
+      <button type="button" @click="nextStep" class="btn-primary w-full sm:w-auto">
+        {{ i18n['common.continue'] }} →
+      </button>
+    </div>
+
+    <!-- Step 2: Symptoms -->
+    <div x-show="currentStep === 2" class="card space-y-5">
+      <h2 class="text-lg font-semibold text-stone-800">{{ i18n['intake.step2'] }}</h2>
+
+      <!-- Free text -->
+      <div>
+        <label class="label">{{ i18n['intake.freetext.label'] }}</label>
+        <textarea class="input min-h-[100px] resize-y" x-model="form.free_text"
+                  placeholder="{{ i18n['intake.freetext.placeholder'] }}"></textarea>
+        <p class="text-xs text-stone-400 mt-1">{{ i18n['intake.freetext.helper'] }}</p>
+      </div>
+
+      <!-- Structured symptoms -->
+      <div>
+        <label class="label">{{ i18n['intake.symptoms.label'] }}</label>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {% set symptoms = [
+            ('fever', 'intake.symptom.fever', '🌡️'),
+            ('nausea', 'intake.symptom.nausea_vomiting', '🤢'),
+            ('vomiting', 'intake.symptom.nausea_vomiting', '🤮'),
+            ('diarrhea', 'intake.symptom.diarrhea', '💧'),
+            ('constipation', 'intake.symptom.constipation', ''),
+            ('fatigue', 'intake.symptom.fatigue', '😴'),
+            ('pain', 'intake.symptom.pain', ''),
+            ('dyspnea', 'intake.symptom.dyspnea', '💨'),
+            ('mucositis', 'intake.symptom.mucositis', ''),
+            ('peripheral_neuropathy', 'intake.symptom.peripheral_neuropathy', ''),
+            ('bleeding', 'intake.symptom.bleeding', '🩸'),
+            ('anxiety', 'intake.symptom.anxiety', ''),
+            ('depression', 'intake.symptom.depression', ''),
+            ('anorexia', 'intake.symptom.anorexia', ''),
+            ('skin_rash', 'intake.symptom.skin_rash', ''),
+            ('neurologic', 'intake.symptom.neurologic', '⚡'),
+            ('sleep_wake_disturbance', 'intake.symptom.sleep_wake_disturbance', ''),
+            ('xerostomia', 'intake.symptom.xerostomia', ''),
+          ] %}
+          {% for sym_value, sym_key, icon in symptoms %}
+            <label class="flex items-center gap-2 p-2.5 border border-stone-200 rounded-lg cursor-pointer hover:bg-stone-50 text-sm transition-colors"
+                   :class="form.selected_symptoms.includes('{{ sym_value }}') ? 'border-sage-400 bg-sage-50 text-sage-700' : 'text-stone-700'">
+              <input type="checkbox" class="accent-sage-500 w-4 h-4 shrink-0"
+                     value="{{ sym_value }}"
+                     @change="toggleSymptom('{{ sym_value }}')"
+                     :checked="form.selected_symptoms.includes('{{ sym_value }}')">
+              {% if icon %}<span>{{ icon }}</span>{% endif %}
+              <span class="leading-tight">{{ i18n[sym_key] }}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Severity inputs for selected symptoms -->
+      <div x-show="form.selected_symptoms.includes('fever')" class="p-4 bg-red-50 border border-red-200 rounded-lg space-y-3">
+        <p class="text-sm font-medium text-red-800">🌡️ {{ i18n['intake.symptom.fever'] }}</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label text-xs">Temperature (°C)</label>
+            <input type="number" step="0.1" min="35" max="42" class="input text-sm"
+                   x-model.number="form.fever_temp" placeholder="e.g. 38.7">
+          </div>
+          <div>
+            <label class="label text-xs">Duration (hours)</label>
+            <input type="number" step="0.5" min="0" max="168" class="input text-sm"
+                   x-model.number="form.fever_duration" placeholder="e.g. 2">
+          </div>
+        </div>
+      </div>
+
+      <div x-show="form.selected_symptoms.includes('pain')" class="p-4 bg-orange-50 border border-orange-200 rounded-lg space-y-3">
+        <p class="text-sm font-medium text-orange-800">{{ i18n['intake.symptom.pain'] }}</p>
+        <div>
+          <label class="label text-xs">Pain score (NRS 0–10)</label>
+          <div class="flex items-center gap-3">
+            <input type="range" min="0" max="10" class="w-full accent-orange-500"
+                   x-model.number="form.pain_nrs">
+            <span class="text-lg font-bold text-orange-700 w-6 text-center" x-text="form.pain_nrs"></span>
+          </div>
+          <div class="flex justify-between text-xs text-stone-400 mt-1">
+            <span>No pain</span><span>Worst possible</span>
+          </div>
+        </div>
+      </div>
+
+      <div x-show="form.selected_symptoms.includes('vomiting') || form.selected_symptoms.includes('nausea')" class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <p class="text-sm font-medium text-yellow-800">Nausea / Vomiting</p>
+        <div class="mt-2">
+          <label class="label text-xs">Vomiting episodes in last 24 hours</label>
+          <input type="number" min="0" max="30" class="input text-sm"
+                 x-model.number="form.vomiting_episodes" placeholder="0">
+        </div>
+      </div>
+
+      <div x-show="form.selected_symptoms.includes('diarrhea')" class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <p class="text-sm font-medium text-yellow-800">{{ i18n['intake.symptom.diarrhea'] }}</p>
+        <div class="mt-2">
+          <label class="label text-xs">Extra stools above your normal baseline (per day)</label>
+          <input type="number" min="0" max="30" class="input text-sm"
+                 x-model.number="form.diarrhea_stools" placeholder="0">
+        </div>
+      </div>
+
+      <div x-show="form.selected_symptoms.includes('dyspnea')" class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <p class="text-sm font-medium text-blue-800">{{ i18n['intake.symptom.dyspnea'] }}</p>
+        <label class="flex items-center gap-2 mt-2 cursor-pointer">
+          <input type="checkbox" class="accent-blue-500 w-4 h-4" x-model="form.dyspnea_at_rest">
+          <span class="text-sm text-blue-700">Occurs at rest (not just with activity)</span>
+        </label>
+      </div>
+
+      <div class="flex gap-3">
+        <button type="button" @click="prevStep" class="btn-secondary">← {{ i18n['common.back'] }}</button>
+        <button type="button" @click="nextStep" class="btn-primary flex-1 sm:flex-none">
+          {{ i18n['common.continue'] }} →
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Review & Submit -->
+    <div x-show="currentStep === 3" class="card space-y-5">
+      <h2 class="text-lg font-semibold text-stone-800">{{ i18n['intake.step3'] }}</h2>
+
+      <!-- Summary -->
+      <div class="bg-stone-50 rounded-lg p-4 space-y-2 text-sm">
+        <div x-show="form.cancer_type">
+          <span class="text-stone-500">Cancer type:</span>
+          <span class="font-medium text-stone-800" x-text="form.cancer_type || '—'"></span>
+        </div>
+        <div x-show="form.treatment_modalities.length > 0">
+          <span class="text-stone-500">Treatments:</span>
+          <span class="font-medium text-stone-800" x-text="form.treatment_modalities.join(', ')"></span>
+        </div>
+        <div x-show="form.selected_symptoms.length > 0">
+          <span class="text-stone-500">Symptoms:</span>
+          <span class="font-medium text-stone-800" x-text="form.selected_symptoms.join(', ')"></span>
+        </div>
+        <div x-show="form.free_text">
+          <span class="text-stone-500">Notes:</span>
+          <span class="font-medium text-stone-800" x-text="form.free_text.substring(0, 100) + (form.free_text.length > 100 ? '...' : '')"></span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div x-show="errorMsg" class="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p class="text-sm text-red-700" x-text="errorMsg"></p>
+      </div>
+
+      <div class="flex gap-3">
+        <button type="button" @click="prevStep" class="btn-secondary">← {{ i18n['common.back'] }}</button>
+        <button type="submit"
+                class="btn-primary flex-1 sm:flex-none flex items-center justify-center gap-2"
+                :disabled="loading">
+          <span class="htmx-indicator">
+            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+          </span>
+          <span x-show="!loading">{{ i18n['intake.submit_btn'] }}</span>
+          <span x-show="loading">{{ i18n['common.loading'] }}</span>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- irAE Alert Banner (shown in result) -->
+  <div id="result-container"></div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function intakeWizard() {
+  return {
+    currentStep: 1,
+    loading: false,
+    errorMsg: '',
+    form: {
+      cancer_type: '',
+      treatment_modalities: [],
+      treatment_line: '',
+      last_chemo_date: '',
+      thrombocytopenia_history: false,
+      free_text: '',
+      selected_symptoms: [],
+      fever_temp: null,
+      fever_duration: null,
+      pain_nrs: 5,
+      vomiting_episodes: null,
+      diarrhea_stools: null,
+      dyspnea_at_rest: false,
+    },
+
+    nextStep() {
+      if (this.currentStep === 2 && !this.form.free_text && this.form.selected_symptoms.length === 0) {
+        this.errorMsg = '{{ i18n["error.no_symptoms"] }}';
+        return;
+      }
+      this.errorMsg = '';
+      if (this.currentStep < 3) this.currentStep++;
+    },
+
+    prevStep() {
+      this.errorMsg = '';
+      if (this.currentStep > 1) this.currentStep--;
+    },
+
+    toggleModality(val) {
+      const idx = this.form.treatment_modalities.indexOf(val);
+      if (idx >= 0) this.form.treatment_modalities.splice(idx, 1);
+      else this.form.treatment_modalities.push(val);
+    },
+
+    toggleSymptom(val) {
+      const idx = this.form.selected_symptoms.indexOf(val);
+      if (idx >= 0) this.form.selected_symptoms.splice(idx, 1);
+      else this.form.selected_symptoms.push(val);
+    },
+
+    buildPayload() {
+      const sessionId = 'sess-' + Math.random().toString(36).slice(2, 10);
+      const symptoms = [];
+
+      for (const name of this.form.selected_symptoms) {
+        const sym = { name };
+        if (name === 'fever') {
+          if (this.form.fever_temp) sym.temperature_celsius = this.form.fever_temp;
+          if (this.form.fever_duration) sym.duration_hours = this.form.fever_duration;
+        }
+        if (name === 'pain') sym.pain_nrs = this.form.pain_nrs;
+        if (name === 'vomiting' && this.form.vomiting_episodes) sym.episodes_per_24h = this.form.vomiting_episodes;
+        if (name === 'diarrhea' && this.form.diarrhea_stools) sym.stools_above_baseline = this.form.diarrhea_stools;
+        if (name === 'dyspnea') sym.at_rest = this.form.dyspnea_at_rest;
+        symptoms.push(sym);
+      }
+
+      return {
+        session_id: sessionId,
+        free_text: this.form.free_text || null,
+        structured_symptoms: symptoms,
+        cancer_type: this.form.cancer_type || null,
+        treatment_modalities: this.form.treatment_modalities,
+        treatment_line: this.form.treatment_line || null,
+        last_chemo_date: this.form.last_chemo_date || null,
+        thrombocytopenia_history: this.form.thrombocytopenia_history,
+        locale: document.documentElement.lang || 'en',
+      };
+    },
+
+    async submitForm() {
+      if (!this.form.free_text && this.form.selected_symptoms.length === 0) {
+        this.errorMsg = '{{ i18n["error.no_symptoms"] }}';
+        return;
+      }
+      this.loading = true;
+      this.errorMsg = '';
+
+      try {
+        const resp = await fetch('/api/triage/assess', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.buildPayload()),
+        });
+
+        const result = await resp.json();
+
+        // Service worker returns 202 when offline — show queued confirmation
+        if (resp.status === 202 && result.offline) {
+          document.getElementById('result-container').innerHTML = renderOfflineBanner(result.message);
+          document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
+          this.currentStep = 3;
+          return;
+        }
+
+        if (!resp.ok) {
+          this.errorMsg = result.detail || '{{ i18n["error.generic"] }}';
+          this.currentStep = 3;
+          return;
+        }
+
+        document.getElementById('result-container').innerHTML = renderResult(result, '{{ lang }}', {{ i18n | tojson }});
+        document.getElementById('result-container').scrollIntoView({ behavior: 'smooth' });
+        this.currentStep = 3;
+      } catch (e) {
+        this.errorMsg = '{{ i18n["error.generic"] }}';
+      } finally {
+        this.loading = false;
+      }
+    },
+  };
+}
+
+function renderOfflineBanner(message) {
+  return `
+    <div class="rounded-xl border-2 border-amber-400 bg-amber-50 p-6 text-center">
+      <div class="text-3xl mb-3">📶</div>
+      <h3 class="text-lg font-semibold text-amber-800 mb-2">You are offline</h3>
+      <p class="text-sm text-amber-700">${message}</p>
+      <p class="text-xs text-amber-600 mt-3">Your symptoms have been saved locally. The triage result will appear automatically when your internet connection is restored.</p>
+    </div>`;
+}
+
+function renderResult(result, lang, i18n) {
+  const levelKey = result.triage_level.toLowerCase();
+  const levelColors = {
+    'emergency': 'border-red-500 bg-red-50',
+    'urgent': 'border-orange-500 bg-orange-50',
+    'routine': 'border-yellow-500 bg-yellow-50',
+    'self_care': 'border-green-500 bg-green-50',
+  };
+  const levelTextColors = {
+    'emergency': 'text-red-700',
+    'urgent': 'text-orange-700',
+    'routine': 'text-yellow-700',
+    'self_care': 'text-green-700',
+  };
+
+  const color = levelColors[levelKey] || '';
+  const textColor = levelTextColors[levelKey] || '';
+
+  let html = `<div class="mt-8 space-y-4">`;
+
+  // irAE Alert
+  if (result.irae_suspected) {
+    html += `<div class="p-4 bg-amber-50 border border-amber-300 rounded-xl flex items-start gap-3">
+      <span class="text-xl">⚠️</span>
+      <p class="text-sm text-amber-800 font-medium">${i18n['triage.irae_alert']}</p>
+    </div>`;
+  }
+
+  // Main result card
+  html += `<div class="card border-l-4 ${color}">
+    <div class="flex items-start justify-between">
+      <div>
+        <p class="text-xs font-medium text-stone-500 uppercase tracking-wider">${i18n['triage.title']}</p>
+        <p class="text-3xl font-bold mt-1 ${textColor}">${result.emoji} ${i18n['triage.level.' + levelKey] || result.triage_level}</p>
+        <p class="text-sm text-stone-600 mt-2">${result.action}</p>
+        <p class="text-xs text-stone-400 mt-1">${result.timeframe}</p>
+      </div>
+      <a href="/" class="btn-secondary text-xs">${i18n['common.new_assessment']}</a>
+    </div>
+  </div>`;
+
+  // Reasoning trace
+  if (result.reasoning_steps && result.reasoning_steps.length > 0) {
+    html += `<details class="card" open>
+      <summary class="font-semibold text-stone-800 cursor-pointer text-sm">${i18n['triage.reasoning.title']}</summary>
+      <div class="mt-4 space-y-3">`;
+    for (const step of result.reasoning_steps) {
+      html += `<div class="flex gap-3 text-sm">
+        <span class="shrink-0 w-6 h-6 rounded-full bg-sage-100 text-sage-700 text-xs font-semibold flex items-center justify-center">${step.step}</span>
+        <div>
+          <p class="text-stone-700">${step.finding}</p>
+          ${step.source ? `<p class="text-xs text-stone-400 mt-0.5">${step.source}</p>` : ''}
+        </div>
+      </div>`;
+    }
+    html += `</div></details>`;
+  }
+
+  // CTCAE grading
+  if (result.symptoms_graded && result.symptoms_graded.length > 0) {
+    html += `<details class="card">
+      <summary class="font-semibold text-stone-800 cursor-pointer text-sm">${i18n['triage.ctcae.title']}</summary>
+      <div class="mt-4 space-y-2">`;
+    for (const gs of result.symptoms_graded) {
+      const grade = gs.ctcae_grade;
+      const gradeColors = ['', 'bg-green-100 text-green-700', 'bg-yellow-100 text-yellow-700', 'bg-orange-100 text-orange-700', 'bg-red-100 text-red-700'];
+      const gc = gradeColors[grade] || 'bg-stone-100 text-stone-600';
+      html += `<div class="flex items-center justify-between p-3 bg-stone-50 rounded-lg">
+        <div>
+          <p class="text-sm font-medium text-stone-800">${gs.term || gs.symptom}</p>
+          <p class="text-xs text-stone-500">${gs.ctcae_description || ''}</p>
+        </div>
+        <span class="text-xs font-semibold px-2 py-1 rounded-full ${gc}">G${grade}</span>
+      </div>`;
+    }
+    html += `</div></details>`;
+  }
+
+  // Citations
+  if (result.citations && result.citations.length > 0) {
+    html += `<details class="card">
+      <summary class="font-semibold text-stone-800 cursor-pointer text-sm">${i18n['triage.citations.title']}</summary>
+      <ul class="mt-4 space-y-1 list-disc list-inside text-xs text-stone-500">`;
+    for (const cite of result.citations) {
+      html += `<li>${cite}</li>`;
+    }
+    html += `</ul></details>`;
+  }
+
+  html += `<p class="text-xs text-stone-400 text-center">${i18n['costars.attribution']}</p>`;
+  html += `</div>`;
+  return html;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,102 @@
+{
+  "description": "Critical symptom combinations that automatically escalate triage to EMERGENCY regardless of individual CTCAE grades",
+  "source": "NCCN Supportive Care Guidelines; ESMO Clinical Practice Guidelines; Clinical consensus",
+  "combinations": [
+    {
+      "id": "RF-001",
+      "name": "Febrile Neutropenia (Classic Presentation)",
+      "symptoms": ["fever"],
+      "context": ["recent_chemotherapy"],
+      "threshold": "temp >= 38.3 OR (temp >= 38.0 AND duration >= 60min)",
+      "triage_level": "EMERGENCY",
+      "rationale": "30-day mortality without treatment: up to 10-15%. Blood cultures before antibiotics; empiric broad-spectrum coverage within 60 min of presentation.",
+      "citation": "Freifeld AG et al. CID 2011;52:e56; NCCN v2.2024"
+    },
+    {
+      "id": "RF-002",
+      "name": "Sepsis Signs in Oncology Patient",
+      "symptoms": ["fever", "fatigue"],
+      "descriptors": ["confusion", "hypotension", "rigors", "shaking"],
+      "triage_level": "EMERGENCY",
+      "rationale": "Rigors, confusion, or hypotension with fever suggest sepsis. SOFA criteria may be met. Time-critical intervention.",
+      "citation": "Singer M et al. JAMA 2016;315:801"
+    },
+    {
+      "id": "RF-003",
+      "name": "Pulmonary Embolism Pattern",
+      "symptoms": ["dyspnea"],
+      "descriptors": ["sudden onset", "pleuritic chest pain", "leg swelling"],
+      "triage_level": "EMERGENCY",
+      "rationale": "Cancer patients have 4-7x increased VTE risk. Sudden dyspnea + pleuritic pain = PE until proven otherwise.",
+      "citation": "Khorana AA et al. J Thromb Haemost 2007"
+    },
+    {
+      "id": "RF-004",
+      "name": "Spinal Cord Compression",
+      "symptoms": ["pain", "peripheral_neuropathy"],
+      "descriptors": ["back pain", "bilateral leg weakness", "bowel dysfunction", "bladder dysfunction", "saddle anesthesia"],
+      "triage_level": "EMERGENCY",
+      "rationale": "Malignant spinal cord compression — functional recovery depends on neurological status at treatment. Window for intervention is narrow.",
+      "citation": "Loblaw DA et al. J Clin Oncol 2005;23:2028"
+    },
+    {
+      "id": "RF-005",
+      "name": "Hypercalcemia of Malignancy",
+      "symptoms": ["nausea", "constipation", "fatigue"],
+      "descriptors": ["confusion", "polyuria", "polydipsia", "weakness", "bone pain"],
+      "triage_level": "URGENT",
+      "rationale": "Hypercalcemia (most common in myeloma, breast, lung, RCC) causes constellation of GI + neuro symptoms. Corrected calcium > 12mg/dL needs IV bisphosphonates.",
+      "citation": "Stewart AF. NEJM 2005;352:373"
+    },
+    {
+      "id": "RF-006",
+      "name": "Superior Vena Cava Syndrome",
+      "symptoms": ["dyspnea"],
+      "descriptors": ["facial swelling", "arm swelling", "neck vein distension", "headache worse when bending forward"],
+      "triage_level": "EMERGENCY",
+      "rationale": "SVC syndrome from mediastinal tumor or thrombosis. Respiratory distress may develop rapidly.",
+      "citation": "Wilson LD et al. NEJM 2007;356:1862"
+    },
+    {
+      "id": "RF-007",
+      "name": "Tumor Lysis Syndrome Risk",
+      "symptoms": ["nausea", "fatigue"],
+      "descriptors": ["muscle cramps", "decreased urine output", "flank pain"],
+      "context": ["recent_chemotherapy", "high_tumor_burden"],
+      "triage_level": "URGENT",
+      "rationale": "TLS within 72h of chemotherapy initiation. Hyperuricemia, hyperkalemia, hyperphosphatemia, hypocalcemia — can cause fatal arrhythmia or renal failure.",
+      "citation": "Cairo MS, Bishop M. Br J Haematol 2004;127:3"
+    },
+    {
+      "id": "RF-008",
+      "name": "Neutropenic Enterocolitis (Typhlitis)",
+      "symptoms": ["fever", "diarrhea", "pain"],
+      "descriptors": ["right lower quadrant pain", "abdominal distension"],
+      "context": ["recent_chemotherapy"],
+      "triage_level": "EMERGENCY",
+      "rationale": "Typhlitis/neutropenic enterocolitis — 50% mortality without rapid surgical + medical management. Febrile neutropenia + RLQ pain requires CT abdomen urgently.",
+      "citation": "Gorschlüter M et al. Leuk Lymphoma 2005;46:651"
+    }
+  ],
+  "immediate_escalation_keywords": [
+    "can't breathe",
+    "chest pain",
+    "passing out",
+    "unconscious",
+    "not breathing",
+    "coughing blood",
+    "vomiting blood",
+    "blood in stool",
+    "can't move my legs",
+    "sudden weakness",
+    "sudden vision loss",
+    "worst headache of my life",
+    "stroke",
+    "seizure",
+    "heart attack",
+    "unresponsive",
+    "no pulse",
+    "severe bleeding",
+    "heavy bleeding"
+  ]
+}

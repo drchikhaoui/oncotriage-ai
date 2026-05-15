@@ -1,0 +1,336 @@
+{
+  "version": "CTCAE v5.0",
+  "source": "NCI Common Terminology Criteria for Adverse Events v5.0, November 2017",
+  "url": "https://ctep.cancer.gov/protocoldevelopment/electronic_applications/ctc.htm",
+  "symptoms": {
+    "fever": {
+      "term": "Fever",
+      "meddra_code": "10016558",
+      "category": "General disorders",
+      "definition": "A disorder characterized by elevation of the body temperature above the normal range.",
+      "grades": {
+        "1": {
+          "description": "38.0 - 39.0°C (100.4 - 102.2°F)",
+          "severity": "mild",
+          "threshold_celsius_low": 38.0,
+          "threshold_celsius_high": 39.0
+        },
+        "2": {
+          "description": "39.1 - 40.0°C (102.3 - 104.0°F)",
+          "severity": "moderate",
+          "threshold_celsius_low": 39.1,
+          "threshold_celsius_high": 40.0
+        },
+        "3": {
+          "description": ">40.0°C (>104.0°F) for ≤24 hours",
+          "severity": "severe",
+          "threshold_celsius_low": 40.1,
+          "threshold_celsius_high": null
+        },
+        "4": {
+          "description": ">40.0°C (>104.0°F) for >24 hours",
+          "severity": "life-threatening",
+          "threshold_celsius_low": 40.1,
+          "threshold_celsius_high": null
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "nausea": {
+      "term": "Nausea",
+      "meddra_code": "10028813",
+      "category": "Gastrointestinal disorders",
+      "definition": "A disorder characterized by a queasy sensation and/or the urge to vomit.",
+      "grades": {
+        "1": {
+          "description": "Loss of appetite without alteration in eating habits",
+          "severity": "mild"
+        },
+        "2": {
+          "description": "Oral intake decreased without significant weight loss, dehydration or malnutrition",
+          "severity": "moderate"
+        },
+        "3": {
+          "description": "Inadequate oral caloric or fluid intake; tube feeding, TPN, or hospitalization indicated",
+          "severity": "severe"
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "vomiting": {
+      "term": "Vomiting",
+      "meddra_code": "10047700",
+      "category": "Gastrointestinal disorders",
+      "definition": "A disorder characterized by the reflexive act of ejecting the contents of the stomach through the mouth.",
+      "grades": {
+        "1": {
+          "description": "1-2 episodes (separated by 5 min) in 24 hrs",
+          "severity": "mild",
+          "episodes_per_24h": [1, 2]
+        },
+        "2": {
+          "description": "3-5 episodes (separated by 5 min) in 24 hrs",
+          "severity": "moderate",
+          "episodes_per_24h": [3, 5]
+        },
+        "3": {
+          "description": "≥6 episodes (separated by 5 min) in 24 hrs; tube feeding, TPN, or hospitalization indicated",
+          "severity": "severe",
+          "episodes_per_24h_min": 6
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "diarrhea": {
+      "term": "Diarrhea",
+      "meddra_code": "10012735",
+      "category": "Gastrointestinal disorders",
+      "definition": "A disorder characterized by frequent and watery bowel movements.",
+      "grades": {
+        "1": {
+          "description": "Increase of <4 stools per day over baseline; mild increase in ostomy output compared to baseline",
+          "severity": "mild",
+          "stools_above_baseline_max": 3
+        },
+        "2": {
+          "description": "Increase of 4-6 stools per day over baseline; moderate increase in ostomy output; limiting instrumental ADL",
+          "severity": "moderate",
+          "stools_above_baseline": [4, 6]
+        },
+        "3": {
+          "description": "Increase of ≥7 stools per day over baseline; hospitalization indicated; severe increase in ostomy output; limiting self-care ADL",
+          "severity": "severe",
+          "stools_above_baseline_min": 7
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "constipation": {
+      "term": "Constipation",
+      "meddra_code": "10010774",
+      "category": "Gastrointestinal disorders",
+      "definition": "A disorder characterized by irregular and infrequent or difficult evacuation of the bowels.",
+      "grades": {
+        "1": {
+          "description": "Occasional or intermittent symptoms; occasional use of stool softeners, laxatives, dietary modification, or enema",
+          "severity": "mild"
+        },
+        "2": {
+          "description": "Persistent symptoms with regular use of laxatives or enemas; limiting instrumental ADL",
+          "severity": "moderate"
+        },
+        "3": {
+          "description": "Obstipation with manual evacuation indicated; limiting self care ADL",
+          "severity": "severe"
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated (e.g. operative intervention)",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "fatigue": {
+      "term": "Fatigue",
+      "meddra_code": "10016256",
+      "category": "General disorders",
+      "definition": "A disorder characterized by a state of generalized weakness with a pronounced inability to summon sufficient energy to accomplish daily activities.",
+      "grades": {
+        "1": {
+          "description": "Fatigue relieved by rest",
+          "severity": "mild"
+        },
+        "2": {
+          "description": "Fatigue not relieved by rest; limiting instrumental ADL",
+          "severity": "moderate"
+        },
+        "3": {
+          "description": "Fatigue not relieved by rest; limiting self care ADL",
+          "severity": "severe"
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "pain": {
+      "term": "Pain",
+      "meddra_code": "10033371",
+      "category": "General disorders",
+      "definition": "A disorder characterized by the sensation of marked discomfort, distress, or agony.",
+      "grades": {
+        "1": {
+          "description": "Mild pain; NRS 1-3",
+          "severity": "mild",
+          "nrs_low": 1,
+          "nrs_high": 3
+        },
+        "2": {
+          "description": "Moderate pain; NRS 4-6; limiting instrumental ADL",
+          "severity": "moderate",
+          "nrs_low": 4,
+          "nrs_high": 6
+        },
+        "3": {
+          "description": "Severe pain; NRS 7-9; limiting self care ADL",
+          "severity": "severe",
+          "nrs_low": 7,
+          "nrs_high": 9
+        },
+        "4": {
+          "description": "Disabling pain; NRS 10; unable to perform basic self-care",
+          "severity": "life-threatening",
+          "nrs": 10
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "dyspnea": {
+      "term": "Dyspnea",
+      "meddra_code": "10013968",
+      "category": "Respiratory, thoracic and mediastinal disorders",
+      "definition": "A disorder characterized by an uncomfortable sensation of difficulty breathing.",
+      "grades": {
+        "1": {
+          "description": "Shortness of breath with moderate exertion",
+          "severity": "mild"
+        },
+        "2": {
+          "description": "Shortness of breath with minimal exertion; limiting instrumental ADL",
+          "severity": "moderate"
+        },
+        "3": {
+          "description": "Shortness of breath at rest; limiting self care ADL",
+          "severity": "severe"
+        },
+        "4": {
+          "description": "Life-threatening respiratory compromise; urgent intervention indicated (e.g. tracheotomy or intubation)",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "mucositis": {
+      "term": "Mucositis oral",
+      "meddra_code": "10028116",
+      "category": "Gastrointestinal disorders",
+      "definition": "A disorder characterized by inflammation of the oral mucosal lining due to cytotoxic effects of treatment.",
+      "grades": {
+        "1": {
+          "description": "Asymptomatic or mild symptoms; intervention not indicated",
+          "severity": "mild"
+        },
+        "2": {
+          "description": "Moderate pain or ulcer that does not interfere with oral intake; modified diet indicated",
+          "severity": "moderate"
+        },
+        "3": {
+          "description": "Severe pain; interfering with oral intake",
+          "severity": "severe"
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "peripheral_neuropathy": {
+      "term": "Peripheral sensory neuropathy",
+      "meddra_code": "10034620",
+      "category": "Nervous system disorders",
+      "definition": "A disorder characterized by functional disturbances of the peripheral nervous system.",
+      "grades": {
+        "1": {
+          "description": "Asymptomatic; loss of deep tendon reflexes or paresthesia",
+          "severity": "mild"
+        },
+        "2": {
+          "description": "Moderate symptoms; limiting instrumental ADL",
+          "severity": "moderate"
+        },
+        "3": {
+          "description": "Severe symptoms; limiting self care ADL",
+          "severity": "severe"
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    },
+    "bleeding": {
+      "term": "Bleeding/bruising",
+      "meddra_code": "10005103",
+      "category": "Vascular disorders",
+      "definition": "A disorder characterized by bleeding from mucosal surfaces or skin, or internal bleeding.",
+      "grades": {
+        "1": {
+          "description": "Mild bleeding; petechiae; minor bruising",
+          "severity": "mild"
+        },
+        "2": {
+          "description": "Moderate bleeding; medical intervention or minor cauterization indicated",
+          "severity": "moderate"
+        },
+        "3": {
+          "description": "Transfusion indicated; radiologic, endoscopic, or operative intervention indicated",
+          "severity": "severe"
+        },
+        "4": {
+          "description": "Life-threatening consequences; urgent intervention indicated",
+          "severity": "life-threatening"
+        },
+        "5": {
+          "description": "Death",
+          "severity": "fatal"
+        }
+      }
+    }
+  }
+}

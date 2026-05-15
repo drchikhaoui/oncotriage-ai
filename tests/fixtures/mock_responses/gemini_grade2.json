@@ -1,0 +1,23 @@
+{
+  "image_quality": {
+    "adequate": true,
+    "issues": [],
+    "retake_recommended": false
+  },
+  "ae_match": true,
+  "ae_match_explanation": "The image shows papules and pustules on the face covering approximately 15% BSA, consistent with Grade 2 acneiform eruption associated with EGFR inhibitor therapy.",
+  "visual_findings": {
+    "body_surface_area_percent_estimate": 15,
+    "distribution": "regional",
+    "primary_morphology": ["papules", "pustules"],
+    "secondary_features": [],
+    "anatomical_site": "face and upper chest"
+  },
+  "ctcae_grade_visual": {
+    "grade": 2,
+    "ctcae_descriptor": "Papules and/or pustules covering 10-30% BSA, which may or may not be associated with symptoms of pruritus or tenderness; associated psychosocial impact; limiting instrumental ADL",
+    "confidence": "moderate"
+  },
+  "caveats": ["In-person clinical assessment required to confirm grade and rule out superinfection."],
+  "language": "en"
+}

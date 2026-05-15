@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Secrets — NEVER commit API keys or credentials
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Database — may contain patient session data
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Test / CI caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+.cache/
+
+# Uploaded images / debug artifacts
+app/static/uploads/
+tests/fixtures/uploaded_photos/
+debug_images/
+tmp/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (if Tailwind CLI ever used locally)
+node_modules/
+package-lock.json.bak

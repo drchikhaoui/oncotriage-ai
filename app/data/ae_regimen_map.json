@@ -1,0 +1,155 @@
+{
+  "ae_types": [
+    {
+      "id": "papulopustular_eruption",
+      "label": {
+        "en": "Pimple-like bumps",
+        "fr": "Boutons type acné",
+        "ar": "حبوب صغيرة تشبه حب الشباب"
+      },
+      "description": {
+        "en": "Small pimples or bumps on face, chest, scalp, or back",
+        "fr": "Petits boutons sur le visage, le torse, le cuir chevelu ou le dos",
+        "ar": "حبوب أو بثور صغيرة على الوجه أو الصدر أو فروة الرأس أو الظهر"
+      },
+      "ctcae_term": "Rash acneiform",
+      "ctcae_code": "10037847",
+      "triggering_modalities": ["targeted_therapy"],
+      "triggering_drugs": ["cetuximab", "panitumumab", "erlotinib", "gefitinib", "osimertinib", "afatinib", "lapatinib"],
+      "grading_criteria": {
+        "1": "Papules and/or pustules covering <10% BSA, which may or may not be associated with symptoms of pruritus or tenderness",
+        "2": "Papules and/or pustules covering 10–30% BSA, which may or may not be associated with symptoms of pruritus or tenderness; associated psychosocial impact; limiting instrumental ADL",
+        "3": "Papules and/or pustules covering >30% BSA, which may or may not be associated with pruritus or tenderness; limiting self-care ADL; associated local superinfection with oral antibiotics indicated",
+        "4": "Papules and/or pustules covering any % BSA, associated with extensive superinfection with IV antibiotics indicated; life-threatening consequences"
+      },
+      "urgency_threshold_grade": 2,
+      "emergency_threshold_grade": 3
+    },
+    {
+      "id": "hand_foot_syndrome",
+      "label": {
+        "en": "Red or painful palms / soles",
+        "fr": "Paumes ou plantes rouges / douloureuses",
+        "ar": "احمرار أو ألم في راحتي اليدين أو أخمصي القدمين"
+      },
+      "description": {
+        "en": "Redness, swelling, blistering, or pain on the palms of hands or soles of feet",
+        "fr": "Rougeur, gonflement, cloques ou douleur sur la paume des mains ou la plante des pieds",
+        "ar": "احمرار أو تورم أو بثور أو ألم في راحتي اليدين أو أخمصي القدمين"
+      },
+      "ctcae_term": "Palmar-plantar erythrodysesthesia syndrome",
+      "ctcae_code": "10033474",
+      "triggering_modalities": ["cytotoxic_chemo", "targeted_therapy"],
+      "triggering_drugs": ["capecitabine", "fluorouracil", "5-FU", "sorafenib", "sunitinib", "regorafenib", "liposomal doxorubicin"],
+      "grading_criteria": {
+        "1": "Minimal skin changes or dermatitis (e.g., erythema, edema, or hyperkeratosis) without pain",
+        "2": "Skin changes (e.g., peeling, blisters, bleeding, edema, or hyperkeratosis) with pain; limiting instrumental ADL",
+        "3": "Severe skin changes (e.g., peeling, blisters, bleeding, edema, or hyperkeratosis) with pain; limiting self-care ADL"
+      },
+      "urgency_threshold_grade": 2,
+      "emergency_threshold_grade": 3
+    },
+    {
+      "id": "checkpoint_dermatitis",
+      "label": {
+        "en": "Spreading rash",
+        "fr": "Éruption qui s'étend",
+        "ar": "طفح جلدي منتشر"
+      },
+      "description": {
+        "en": "A rash that's spreading across the body — not in one spot",
+        "fr": "Une éruption qui se propage sur le corps, pas à un seul endroit",
+        "ar": "طفح جلدي ينتشر على الجسم وليس في مكان واحد فقط"
+      },
+      "ctcae_term": "Rash maculo-papular",
+      "ctcae_code": "10037868",
+      "triggering_modalities": ["immunotherapy"],
+      "triggering_drugs": ["pembrolizumab", "nivolumab", "atezolizumab", "durvalumab", "ipilimumab", "avelumab", "cemiplimab"],
+      "grading_criteria": {
+        "1": "Macules/papules covering <10% BSA with or without symptoms (e.g., pruritus, burning, tightness)",
+        "2": "Macules/papules covering 10–30% BSA with or without symptoms; limiting instrumental ADL",
+        "3": "Macules/papules covering >30% BSA with or without associated symptoms; limiting self-care ADL",
+        "4": "Papules/pustules covering any % BSA; generalized exfoliative, erosive, or bullous dermatitis"
+      },
+      "urgency_threshold_grade": 2,
+      "emergency_threshold_grade": 3,
+      "irae": true
+    },
+    {
+      "id": "radiation_dermatitis",
+      "label": {
+        "en": "Skin reaction in radiation area",
+        "fr": "Réaction cutanée dans la zone d'irradiation",
+        "ar": "تفاعل جلدي في منطقة العلاج الإشعاعي"
+      },
+      "description": {
+        "en": "Skin changes in the area where you received radiation therapy",
+        "fr": "Changements de peau dans la zone où vous avez reçu la radiothérapie",
+        "ar": "تغيرات في الجلد في المنطقة التي خضعت فيها للعلاج الإشعاعي"
+      },
+      "ctcae_term": "Dermatitis radiation",
+      "ctcae_code": "10012442",
+      "triggering_modalities": ["radiation"],
+      "triggering_drugs": [],
+      "grading_criteria": {
+        "1": "Faint erythema or dry desquamation",
+        "2": "Moderate to brisk erythema; patchy moist desquamation, mostly confined to skin folds and creases; moderate edema",
+        "3": "Moist desquamation in areas other than skin folds and creases; bleeding induced by minor trauma or abrasion",
+        "4": "Life-threatening consequences; skin necrosis or ulceration of full-thickness dermis; spontaneous bleeding from involved site"
+      },
+      "urgency_threshold_grade": 2,
+      "emergency_threshold_grade": 3
+    },
+    {
+      "id": "oral_mucositis",
+      "label": {
+        "en": "Mouth sores",
+        "fr": "Aphtes ou plaies dans la bouche",
+        "ar": "تقرحات الفم"
+      },
+      "description": {
+        "en": "Painful sores, ulcers, or inflammation inside the mouth",
+        "fr": "Plaies douloureuses, ulcères ou inflammation dans la bouche",
+        "ar": "قرح مؤلمة أو تقرحات أو التهاب داخل الفم"
+      },
+      "ctcae_term": "Mucositis oral",
+      "ctcae_code": "10028116",
+      "triggering_modalities": ["cytotoxic_chemo", "radiation"],
+      "triggering_drugs": ["fluorouracil", "5-FU", "methotrexate", "melphalan", "cisplatin", "doxorubicin"],
+      "grading_criteria": {
+        "1": "Asymptomatic or mild symptoms; intervention not indicated",
+        "2": "Moderate pain or ulcer; not interfering with oral intake; modified diet indicated",
+        "3": "Severe pain; interfering with oral intake",
+        "4": "Life-threatening consequences; urgent intervention indicated"
+      },
+      "urgency_threshold_grade": 2,
+      "emergency_threshold_grade": 3
+    },
+    {
+      "id": "unsure",
+      "label": {
+        "en": "Not sure / let the AI decide",
+        "fr": "Je ne suis pas sûr — laissez l'IA décider",
+        "ar": "لست متأكداً — دعِ الذكاء الاصطناعي يقرر"
+      },
+      "description": {
+        "en": "Upload a photo and let the system identify what it sees",
+        "fr": "Téléchargez une photo et laissez le système identifier ce qu'il voit",
+        "ar": "ارفع صورة ودعِ النظام يحدد ما يراه"
+      },
+      "ctcae_term": "",
+      "ctcae_code": "",
+      "triggering_modalities": [
+        "targeted_therapy",
+        "cytotoxic_chemo",
+        "immunotherapy",
+        "radiation",
+        "hormonal_endocrine"
+      ],
+      "triggering_drugs": [],
+      "grading_criteria": {},
+      "urgency_threshold_grade": 2,
+      "emergency_threshold_grade": 3
+    }
+  ]
+}

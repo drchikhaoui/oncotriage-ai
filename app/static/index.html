@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OncoTriage — Symptom Assessment</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="logo">Onco<span>Triage</span> <span style="font-size:12px;font-weight:400;color:#64748b;margin-left:8px;">Clinical Decision Support</span></div>
+  <nav>
+    <a href="/">Patient Intake</a>
+    <a href="/dashboard">Clinician Dashboard</a>
+  </nav>
+</header>
+
+<div class="container" id="intake-view">
+  <div class="card">
+    <div class="card-title">Oncology Symptom Assessment</div>
+    <div class="card-subtitle">For oncology patients and cancer survivors. Describe your symptoms below. All information is anonymous.</div>
+
+    <form id="intake-form">
+      <!-- Free text -->
+      <div class="form-group">
+        <label for="free-text">Describe your symptoms <span class="label-optional">(in your own words)</span></label>
+        <textarea id="free-text" placeholder="e.g. I have a fever of 38.7°C that started last night, I feel very tired and have been vomiting about 7 times today..."></textarea>
+      </div>
+
+      <div class="section-divider">or use structured form</div>
+
+      <!-- Symptom selector -->
+      <div class="form-group">
+        <label>Select symptoms you are experiencing</label>
+        <div class="symptom-grid" id="symptom-grid">
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="fever"> 🌡️ Fever / High Temperature</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="nausea"> 🤢 Nausea</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="vomiting"> Vomiting</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="diarrhea"> Diarrhea</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="constipation"> Constipation</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="fatigue"> 😴 Fatigue</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="pain"> Pain</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="dyspnea"> 💨 Shortness of Breath</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="mucositis"> Mouth Sores</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="peripheral_neuropathy"> Numbness / Tingling</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="bleeding"> 🩸 Bleeding / Bruising</label>
+          <label class="symptom-item"><input type="checkbox" name="symptom" value="neurologic"> ⚡ Neurologic Symptoms</label>
+        </div>
+      </div>
+
+      <!-- Dynamic detail fields, shown per symptom -->
+      <div id="symptom-details"></div>
+
+      <div class="section-divider">clinical context</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="last-chemo">Last Chemotherapy Date <span class="label-optional">(if applicable)</span></label>
+          <input type="date" id="last-chemo">
+        </div>
+        <div class="form-group">
+          <label for="cancer-type">Cancer Type <span class="label-optional">(optional)</span></label>
+          <input type="text" id="cancer-type" placeholder="e.g. Breast, Lung, Lymphoma...">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="treatment-status">Treatment Status</label>
+          <select id="treatment-status">
+            <option value="">Unknown / Prefer not to say</option>
+            <option value="active_treatment">Active Treatment</option>
+            <option value="surveillance">Surveillance / Follow-up</option>
+            <option value="palliative">Palliative Care</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="thrombocytopenia" style="width:auto;margin-right:6px;">
+            History of low platelet count (thrombocytopenia)
+          </label>
+        </div>
+      </div>
+
+      <div id="form-error" class="error-banner" style="display:none;"></div>
+      <button type="submit" class="btn btn-primary" id="submit-btn">Assess Symptoms</button>
+    </form>
+  </div>
+</div>
+
+<!-- Result view (hidden until triage runs) -->
+<div class="container" id="result-view" style="display:none;">
+  <div style="margin-bottom:16px;">
+    <button class="btn btn-secondary btn-sm" onclick="showIntake()">← New Assessment</button>
+  </div>
+
+  <div id="triage-card-container"></div>
+
+  <div class="card">
+    <div class="collapsible-header" onclick="toggleSection('reasoning')">
+      <span>Clinical Reasoning Trace</span><span id="reasoning-toggle">▼</span>
+    </div>
+    <div class="collapsible-body" id="reasoning-body">
+      <ul class="reasoning-list" id="reasoning-list"></ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="collapsible-header" onclick="toggleSection('symptoms')">
+      <span>CTCAE Grading Summary</span><span id="symptoms-toggle">▼</span>
+    </div>
+    <div class="collapsible-body" id="symptoms-body">
+      <div id="ctcae-summary"></div>
+    </div>
+  </div>
+
+  <div id="citations-section" class="card" style="display:none;">
+    <div class="card-title" style="margin-bottom:8px;">Evidence Base</div>
+    <div id="citations-container"></div>
+  </div>
+
+  <div class="card">
+    <p class="disclaimer" id="disclaimer-text"></p>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

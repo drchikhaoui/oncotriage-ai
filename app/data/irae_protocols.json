@@ -1,0 +1,214 @@
+{
+  "version": "1.0",
+  "source": "NCCN Management of Immunotherapy-Related Toxicities v1.2024; Schneider BJ et al. JCO 2021 (ASCO Guideline Update)",
+  "citation_primary": "Schneider BJ, Naidoo J, Santomasso BD, et al. Management of Immune-Related Adverse Events in Patients Treated With Immune Checkpoint Inhibitor Therapy: ASCO Guideline Update. J Clin Oncol. 2021;39(36):4073-4126.",
+  "citation_nccn": "NCCN Clinical Practice Guidelines in Oncology: Management of Immunotherapy-Related Toxicities. Version 1.2024.",
+  "activation_trigger": "treatment_modality contains 'immunotherapy'",
+  "immune_checkpoint_classes": [
+    "PD-1 inhibitors (nivolumab, pembrolizumab, cemiplimab)",
+    "PD-L1 inhibitors (atezolizumab, durvalumab, avelumab)",
+    "CTLA-4 inhibitors (ipilimumab, tremelimumab)",
+    "Combination (nivolumab + ipilimumab)"
+  ],
+  "protocols": {
+    "colitis": {
+      "id": "colitis",
+      "name": {"en": "irAE Colitis / Immune-Mediated Enterocolitis", "fr": "Colite immune", "ar": "التهاب القولون المناعي"},
+      "incidence": "Up to 30% with combination ICI; 10-15% with single agent",
+      "trigger_symptoms": ["diarrhea"],
+      "warning_signs": ["blood_in_stool", "mucus_in_stool", "abdominal_cramping", "fever"],
+      "grading": {
+        "grade_1": {"criteria": "<4 stools/day above baseline; asymptomatic; no blood", "tier": "routine"},
+        "grade_2": {"criteria": "4-6 stools/day above baseline; abdominal pain; mucus/blood", "tier": "urgent"},
+        "grade_3": {"criteria": "≥7 stools/day; severe abdominal pain; peritoneal signs; IV steroids", "tier": "urgent"},
+        "grade_4": {"criteria": "Life-threatening; perforation; ischemia; toxic megacolon", "tier": "emergency"}
+      },
+      "management": {
+        "grade_1": "Hold ICI if worsening. Loperamide, budesonide. Monitor closely.",
+        "grade_2": "Hold ICI. Stool cultures (C. diff, CMV, bacterial). Colonoscopy if persistent. Prednisone 1mg/kg/day.",
+        "grade_3-4": "Permanently discontinue ICI. IV methylprednisolone 1-2mg/kg/day. GI consult. Infliximab if steroid-refractory."
+      },
+      "triage_rules": [
+        {
+          "id": "colitis_g4",
+          "condition": "grade >= 4",
+          "tier": "emergency",
+          "reasoning": "Grade 4 irAE colitis — life-threatening. Permanently discontinue ICI. IV steroids + GI emergency evaluation."
+        },
+        {
+          "id": "colitis_g2_plus",
+          "condition": "grade >= 2 AND recent_immunotherapy == true",
+          "tier": "urgent",
+          "reasoning": "Grade ≥2 diarrhea with immunotherapy — immune-mediated colitis must be ruled out. Hold ICI. Stool workup + steroids per NCCN/ASCO irAE guidelines."
+        }
+      ]
+    },
+    "pneumonitis": {
+      "id": "pneumonitis",
+      "name": {"en": "irAE Pneumonitis", "fr": "Pneumopathie immune", "ar": "التهاب رئوي مناعي"},
+      "incidence": "2-4% PD-1/PD-L1 monotherapy; up to 10% with combination",
+      "trigger_symptoms": ["dyspnea", "cough", "fatigue"],
+      "warning_signs": ["new_cough", "dyspnea", "fever", "hypoxia", "chest_pain"],
+      "grading": {
+        "grade_1": {"criteria": "Asymptomatic; radiologic changes only", "tier": "urgent"},
+        "grade_2": {"criteria": "Symptomatic; new dyspnea; limiting instrumental ADL", "tier": "urgent"},
+        "grade_3": {"criteria": "Severe dyspnea; limiting self-care ADL; supplemental O2 required", "tier": "emergency"},
+        "grade_4": {"criteria": "Life-threatening respiratory compromise; intubation indicated", "tier": "emergency"}
+      },
+      "management": {
+        "grade_1": "Hold ICI. CT chest + PFTs. Pulmonology consult. Restart only if grade 1 resolves.",
+        "grade_2": "Hold ICI. Prednisone 1mg/kg/day. CT chest. Bronchoscopy if workup unclear.",
+        "grade_3-4": "Permanently discontinue ICI. IV methylprednisolone 1-2mg/kg/day. ICU consideration. Infliximab/MMF if steroid-refractory."
+      },
+      "triage_rules": [
+        {
+          "id": "pneumonitis_any_grade_immunotherapy",
+          "condition": "recent_immunotherapy == true AND (dyspnea == true OR new_cough == true)",
+          "tier": "urgent",
+          "reasoning": "Any new respiratory symptom with immunotherapy — irAE pneumonitis until proven otherwise. CT chest required. Hold ICI pending evaluation per NCCN/ASCO irAE guidelines."
+        },
+        {
+          "id": "pneumonitis_severe",
+          "condition": "grade >= 3",
+          "tier": "emergency",
+          "reasoning": "Grade ≥3 pneumonitis — immediately life-threatening. IV steroids, emergency pulmonology."
+        }
+      ]
+    },
+    "hepatitis": {
+      "id": "hepatitis",
+      "name": {"en": "irAE Hepatitis", "fr": "Hépatite immune", "ar": "التهاب الكبد المناعي"},
+      "incidence": "5-10% PD-1; up to 30% with combination",
+      "trigger_symptoms": ["fatigue", "nausea_vomiting", "pain"],
+      "warning_signs": ["jaundice", "dark_urine", "right_upper_quadrant_pain", "tea_colored_urine"],
+      "grading": {
+        "grade_1": {"criteria": "AST/ALT 1-3x ULN; no symptoms", "tier": "routine"},
+        "grade_2": {"criteria": "AST/ALT 3-5x ULN; mild symptoms", "tier": "urgent"},
+        "grade_3": {"criteria": "AST/ALT 5-20x ULN; moderate symptoms; hospitalization", "tier": "urgent"},
+        "grade_4": {"criteria": "AST/ALT >20x ULN; decompensated liver function", "tier": "emergency"}
+      },
+      "clinical_flags": ["jaundice", "dark_urine", "RUQ_pain", "tea_colored_urine"],
+      "triage_rules": [
+        {
+          "id": "hepatitis_jaundice_irae",
+          "condition": "jaundice == true AND recent_immunotherapy == true",
+          "tier": "emergency",
+          "reasoning": "Jaundice with immunotherapy — irAE hepatitis with possible liver failure. Emergency hepatology evaluation. LFTs, coagulation studies urgently needed."
+        },
+        {
+          "id": "hepatitis_symptoms",
+          "condition": "recent_immunotherapy == true AND (ruq_pain == true OR dark_urine == true)",
+          "tier": "urgent",
+          "reasoning": "RUQ pain or dark urine with immunotherapy — possible irAE hepatitis. Same-day LFT assessment required."
+        }
+      ]
+    },
+    "hypophysitis": {
+      "id": "hypophysitis",
+      "name": {"en": "irAE Hypophysitis / Pituitary Inflammation", "fr": "Hypophysite immune", "ar": "التهاب الغدة النخامية المناعي"},
+      "incidence": "Up to 10% with CTLA-4; <1% with PD-1/PD-L1",
+      "trigger_symptoms": ["fatigue", "nausea_vomiting"],
+      "warning_signs": ["severe_headache", "visual_changes", "extreme_fatigue", "nausea", "dizziness", "confusion"],
+      "clinical_flags": ["severe_headache", "visual_field_defects", "adrenal_crisis_signs"],
+      "grading": {
+        "grade_1": {"criteria": "Asymptomatic or mild; no hormone deficiency detected", "tier": "routine"},
+        "grade_2": {"criteria": "Moderate symptoms; hormone replacement indicated", "tier": "urgent"},
+        "grade_3": {"criteria": "Severe symptoms; hospitalization indicated; adrenal crisis risk", "tier": "urgent"},
+        "grade_4": {"criteria": "Life-threatening adrenal crisis; vasopressors required", "tier": "emergency"}
+      },
+      "triage_rules": [
+        {
+          "id": "hypophysitis_adrenal_crisis",
+          "condition": "recent_immunotherapy == true AND (hypotension == true OR confusion == true) AND fatigue_severe == true",
+          "tier": "emergency",
+          "reasoning": "Possible irAE hypophysitis with adrenal crisis — hypotension, confusion, severe fatigue. Urgent IV hydrocortisone + imaging. ACTH stimulation test."
+        },
+        {
+          "id": "hypophysitis_symptoms",
+          "condition": "recent_immunotherapy == true AND severe_headache == true AND fatigue_severe == true",
+          "tier": "urgent",
+          "reasoning": "Headache + severe fatigue with immunotherapy — irAE hypophysitis pattern. MRI pituitary + cortisol/ACTH panel required. Per ASCO/NCCN irAE guidelines."
+        }
+      ]
+    },
+    "myocarditis": {
+      "id": "myocarditis",
+      "name": {"en": "irAE Myocarditis", "fr": "Myocardite immune", "ar": "التهاب عضلة القلب المناعي"},
+      "incidence": "<1% but case fatality rate up to 25-50%",
+      "trigger_symptoms": ["dyspnea", "fatigue", "pain"],
+      "warning_signs": ["chest_pain", "palpitations", "dyspnea_on_exertion", "syncope", "edema"],
+      "clinical_flags": ["new_ecg_changes", "troponin_elevation"],
+      "grading": {
+        "grade_1": {"criteria": "Mild symptoms; no cardiac dysfunction", "tier": "urgent"},
+        "grade_2": {"criteria": "Moderate symptoms; noninvasive intervention indicated", "tier": "urgent"},
+        "grade_3": {"criteria": "Severe symptoms; cardiac monitoring required", "tier": "emergency"},
+        "grade_4": {"criteria": "Life-threatening; LVEF <20%, hemodynamic instability", "tier": "emergency"}
+      },
+      "triage_rules": [
+        {
+          "id": "myocarditis_any_grade",
+          "condition": "recent_immunotherapy == true AND (chest_pain == true OR palpitations == true)",
+          "tier": "emergency",
+          "reasoning": "Chest pain or palpitations with immunotherapy — irAE myocarditis is rare but has up to 50% case fatality rate. Immediately discontinue ICI. Emergency ECG, troponin, echo. Cardiology consultation STAT."
+        }
+      ]
+    },
+    "thyroiditis": {
+      "id": "thyroiditis",
+      "name": {"en": "irAE Thyroiditis / Thyroid Dysfunction", "fr": "Thyroïdite immune", "ar": "التهاب الغدة الدرقية المناعي"},
+      "incidence": "5-10% hypothyroidism; 1-5% hyperthyroidism",
+      "trigger_symptoms": ["fatigue"],
+      "clinical_flags": ["palpitations_with_fatigue", "heat_intolerance", "unexpected_weight_change", "tremor"],
+      "triage_rules": [
+        {
+          "id": "thyroiditis_storm",
+          "condition": "recent_immunotherapy == true AND palpitations == true AND tremor == true AND heat_intolerance == true",
+          "tier": "emergency",
+          "reasoning": "Possible thyroid storm pattern with immunotherapy. Emergency evaluation — TFTs, cardiology."
+        },
+        {
+          "id": "thyroiditis_symptoms",
+          "condition": "recent_immunotherapy == true AND (palpitations == true OR unexpected_weight_loss == true OR tremor == true)",
+          "tier": "routine",
+          "reasoning": "Possible irAE thyroid dysfunction. Routine TFT panel (TSH, free T4) within 24-48h. Continue ICI if clinically stable."
+        }
+      ]
+    },
+    "nephritis": {
+      "id": "nephritis",
+      "name": {"en": "irAE Nephritis", "fr": "Néphrite immune", "ar": "التهاب الكلى المناعي"},
+      "incidence": "1-2% PD-1/PD-L1 monotherapy",
+      "trigger_symptoms": ["fatigue"],
+      "clinical_flags": ["decreased_urine_output", "edema", "dark_urine", "hematuria"],
+      "triage_rules": [
+        {
+          "id": "nephritis_symptoms",
+          "condition": "recent_immunotherapy == true AND (decreased_urine_output == true OR edema == true OR hematuria == true)",
+          "tier": "urgent",
+          "reasoning": "Possible irAE nephritis with immunotherapy. Same-day BMP/creatinine/urinalysis. Hold ICI pending evaluation per NCCN/ASCO guidelines."
+        }
+      ]
+    },
+    "irae_dermatitis": {
+      "id": "irae_dermatitis",
+      "name": {"en": "irAE Dermatitis / Immune-Mediated Skin Toxicity", "fr": "Dermatite immune", "ar": "التهاب الجلد المناعي"},
+      "incidence": "Most common irAE — up to 40% of patients",
+      "trigger_symptoms": ["skin_rash"],
+      "clinical_flags": ["blistering", "mucous_membrane_involvement", "target_lesions"],
+      "triage_rules": [
+        {
+          "id": "irae_dermatitis_g3_plus",
+          "condition": "recent_immunotherapy == true AND grade >= 3",
+          "tier": "emergency",
+          "reasoning": "Grade ≥3 immune-mediated dermatitis — Stevens-Johnson syndrome or TEN must be excluded. Hold ICI immediately. Emergency dermatology."
+        },
+        {
+          "id": "irae_dermatitis_g2",
+          "condition": "recent_immunotherapy == true AND grade >= 2",
+          "tier": "urgent",
+          "reasoning": "Grade 2 immune-mediated dermatitis. Hold ICI if progressing. Topical or systemic steroids per NCCN irAE guidelines."
+        }
+      ]
+    }
+  }
+}

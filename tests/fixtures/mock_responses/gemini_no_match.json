@@ -1,0 +1,13 @@
+{
+  "image_quality": {
+    "adequate": true,
+    "issues": [],
+    "retake_recommended": false
+  },
+  "ae_match": false,
+  "ae_match_explanation": "The image does not appear to show the requested AE type. The skin appears normal without significant rash or lesions.",
+  "visual_findings": null,
+  "ctcae_grade_visual": null,
+  "caveats": ["Consider consulting oncology team if symptoms persist."],
+  "language": "en"
+}

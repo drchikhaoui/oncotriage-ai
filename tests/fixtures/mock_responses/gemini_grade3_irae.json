@@ -1,0 +1,23 @@
+{
+  "image_quality": {
+    "adequate": true,
+    "issues": [],
+    "retake_recommended": false
+  },
+  "ae_match": true,
+  "ae_match_explanation": "Maculopapular rash covering >30% BSA with areas of confluence, consistent with Grade 3 immune-related dermatitis.",
+  "visual_findings": {
+    "body_surface_area_percent_estimate": 35,
+    "distribution": "generalized",
+    "primary_morphology": ["macules", "papules", "erythema"],
+    "secondary_features": ["excoriation"],
+    "anatomical_site": "trunk and extremities"
+  },
+  "ctcae_grade_visual": {
+    "grade": 3,
+    "ctcae_descriptor": "Macules/papules covering >30% BSA with or without associated symptoms; limiting self-care ADL",
+    "confidence": "high"
+  },
+  "caveats": ["SJS/TEN must be excluded — urgent dermatology and oncology consultation required."],
+  "language": "en"
+}

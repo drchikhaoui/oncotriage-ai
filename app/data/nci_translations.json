@@ -1,0 +1,147 @@
+{
+  "_meta": {
+    "source": "NCI Thesaurus (NCIt) + manual verification",
+    "refreshed": "2026-01-01",
+    "note": "Pre-seeded to avoid runtime API calls. Refresh via scripts/refresh_nci_cache.py"
+  },
+  "terms": {
+    "fever": {
+      "ncit_code": "C3038",
+      "en": "Fever",
+      "fr": "Fièvre",
+      "ar": "حمى"
+    },
+    "nausea": {
+      "ncit_code": "C3258",
+      "en": "Nausea",
+      "fr": "Nausée",
+      "ar": "غثيان"
+    },
+    "vomiting": {
+      "ncit_code": "C3259",
+      "en": "Vomiting",
+      "fr": "Vomissement",
+      "ar": "قيء"
+    },
+    "diarrhea": {
+      "ncit_code": "C2987",
+      "en": "Diarrhea",
+      "fr": "Diarrhée",
+      "ar": "إسهال"
+    },
+    "constipation": {
+      "ncit_code": "C2861",
+      "en": "Constipation",
+      "fr": "Constipation",
+      "ar": "إمساك"
+    },
+    "fatigue": {
+      "ncit_code": "C3036",
+      "en": "Fatigue",
+      "fr": "Fatigue",
+      "ar": "إرهاق"
+    },
+    "pain": {
+      "ncit_code": "C3303",
+      "en": "Pain",
+      "fr": "Douleur",
+      "ar": "ألم"
+    },
+    "dyspnea": {
+      "ncit_code": "C2998",
+      "en": "Dyspnea",
+      "fr": "Dyspnée",
+      "ar": "ضيق التنفس"
+    },
+    "mucositis": {
+      "ncit_code": "C26886",
+      "en": "Mucositis",
+      "fr": "Mucite",
+      "ar": "التهاب الغشاء المخاطي"
+    },
+    "peripheral_neuropathy": {
+      "ncit_code": "C3113",
+      "en": "Peripheral Neuropathy",
+      "fr": "Neuropathie périphérique",
+      "ar": "اعتلال الأعصاب الطرفية"
+    },
+    "bleeding": {
+      "ncit_code": "C26791",
+      "en": "Bleeding",
+      "fr": "Saignement",
+      "ar": "نزيف"
+    },
+    "anxiety": {
+      "ncit_code": "C2981",
+      "en": "Anxiety",
+      "fr": "Anxiété",
+      "ar": "قلق"
+    },
+    "depression": {
+      "ncit_code": "C2980",
+      "en": "Depression",
+      "fr": "Dépression",
+      "ar": "اكتئاب"
+    },
+    "anorexia": {
+      "ncit_code": "C29595",
+      "en": "Anorexia",
+      "fr": "Anorexie",
+      "ar": "فقدان الشهية"
+    },
+    "skin_rash": {
+      "ncit_code": "C36271",
+      "en": "Skin Rash",
+      "fr": "Éruption cutanée",
+      "ar": "طفح جلدي"
+    },
+    "skin_reactions": {
+      "ncit_code": "C36271",
+      "en": "Skin Reactions",
+      "fr": "Réactions cutanées",
+      "ar": "تفاعلات جلدية"
+    },
+    "sleep_wake_disturbance": {
+      "ncit_code": "C3387",
+      "en": "Sleep Disturbance",
+      "fr": "Trouble du sommeil",
+      "ar": "اضطراب النوم"
+    },
+    "xerostomia": {
+      "ncit_code": "C26843",
+      "en": "Xerostomia",
+      "fr": "Xérostomie",
+      "ar": "جفاف الفم"
+    },
+    "papulopustular_eruption": {
+      "ncit_code": "C90521",
+      "en": "Papulopustular Eruption",
+      "fr": "Éruption papulo-pustuleuse",
+      "ar": "طفح حطاطي بثري"
+    },
+    "hand_foot_syndrome": {
+      "ncit_code": "C36283",
+      "en": "Palmar-Plantar Erythrodysesthesia Syndrome",
+      "fr": "Érythrodysesthésie palmo-plantaire",
+      "ar": "متلازمة اليد والقدم"
+    },
+    "checkpoint_dermatitis": {
+      "ncit_code": "C36271",
+      "en": "Immune Checkpoint Inhibitor-Related Dermatitis",
+      "fr": "Dermatite liée aux inhibiteurs de checkpoint immunitaire",
+      "ar": "التهاب الجلد المرتبط بمثبطات نقاط التفتيش المناعية"
+    },
+    "radiation_dermatitis": {
+      "ncit_code": "C28418",
+      "en": "Radiation Dermatitis",
+      "fr": "Dermite radique",
+      "ar": "التهاب الجلد الإشعاعي"
+    },
+    "oral_mucositis": {
+      "ncit_code": "C26886",
+      "en": "Oral Mucositis",
+      "fr": "Mucite buccale",
+      "ar": "التهاب الغشاء المخاطي للفم"
+    }
+  }
+}

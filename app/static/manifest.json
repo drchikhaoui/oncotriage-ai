@@ -1,0 +1,25 @@
+{
+  "name": "OncoTriage AI",
+  "short_name": "OncoTriage",
+  "description": "AI-powered oncology symptom triage — COSTaRS v2020 + NCCN guidelines",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf9",
+  "theme_color": "#5B7553",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["medical", "health"],
+  "lang": "en"
+}

@@ -1,0 +1,544 @@
+{% extends "base.html" %}
+{% block title %}{{ i18n.get('visual_triage.title', 'Photo Triage') }}{% endblock %}
+
+{% block content %}
+<div x-data='visualTriage({{ ae_types | tojson }})' class="max-w-2xl mx-auto">
+
+  <!-- Progress bar -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <h1 class="text-xl font-bold text-stone-800">{{ i18n.get('visual_triage.title', 'Visual Symptom Assessment') }}</h1>
+      <span class="text-xs text-stone-400 font-medium" x-text="`${step} / 4`"></span>
+    </div>
+    <div class="h-1.5 bg-stone-200 rounded-full overflow-hidden">
+      <div class="h-full bg-sage-500 rounded-full transition-all duration-500"
+           :style="`width: ${(step / 4) * 100}%`"></div>
+    </div>
+    <div class="flex justify-between mt-1.5 text-[10px] text-stone-400 font-medium uppercase tracking-wide">
+      <span :class="step >= 1 ? 'text-sage-600' : ''">{{ i18n.get('visual_triage.step1', 'Select') }}</span>
+      <span :class="step >= 2 ? 'text-sage-600' : ''">{{ i18n.get('visual_triage.step2', 'Capture') }}</span>
+      <span :class="step >= 3 ? 'text-sage-600' : ''">{{ i18n.get('visual_triage.step3', 'Analyze') }}</span>
+      <span :class="step >= 4 ? 'text-sage-600' : ''">{{ i18n.get('visual_triage.step4', 'Result') }}</span>
+    </div>
+  </div>
+
+  <!-- Clinical disclaimer banner -->
+  <div class="mb-5 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 leading-relaxed">
+    <strong>Clinical Decision Support Only.</strong>
+    {{ i18n.get('visual_triage.disclaimer', 'Visual assessment supports CTCAE grading — it does not replace clinician evaluation. All findings require clinical verification.') }}
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- STEP 1 — Select AE type                     -->
+  <!-- ════════════════════════════════════════════ -->
+  <div x-show="step === 1" x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+
+    <h2 class="text-base font-semibold text-stone-700 mb-1">
+      {{ i18n.get('visual_triage.select_ae.title', 'What would you like to photograph?') }}
+    </h2>
+    <p class="text-sm text-stone-500 mb-5">
+      {{ i18n.get('visual_triage.select_ae.subtitle', 'Select the skin or mouth symptom that best matches what you see.') }}
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+      <template x-for="ae in aeTypes" :key="ae.id">
+        <button
+          @click="selectAE(ae)"
+          :class="selectedAE?.id === ae.id
+            ? 'ring-2 ring-sage-500 border-sage-400 bg-sage-50'
+            : 'border-stone-200 bg-white hover:border-sage-300 hover:bg-stone-50'"
+          class="relative text-left p-4 rounded-xl border-2 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-sage-400 group">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl mt-0.5" x-text="aeIcon(ae.id)"></span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-stone-800 leading-tight" x-text="getLabel(ae.label)"></p>
+              <p class="text-xs text-stone-500 mt-1 leading-relaxed" x-text="getLabel(ae.description)"></p>
+            </div>
+            <div x-show="selectedAE?.id === ae.id"
+                 class="flex-shrink-0 w-5 h-5 bg-sage-500 rounded-full flex items-center justify-center mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+      </template>
+    </div>
+
+    <!-- Treatment context (optional, improves accuracy) -->
+    <details class="mb-5 border border-stone-200 rounded-lg overflow-hidden">
+      <summary class="px-4 py-3 text-sm font-medium text-stone-600 cursor-pointer bg-stone-50 hover:bg-stone-100 select-none">
+        {{ i18n.get('visual_triage.treatment_context', 'Add treatment context (optional — improves accuracy)') }}
+      </summary>
+      <div class="p-4 space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-stone-600 mb-1">{{ i18n.get('intake.treatment.label', 'Current Treatment') }}</label>
+          <div class="flex flex-wrap gap-2">
+            {% for code, label in [
+              ('cytotoxic_chemo', 'Cytotoxic Chemo'),
+              ('immunotherapy', 'Immunotherapy'),
+              ('targeted_therapy', 'Targeted Therapy'),
+              ('radiation', 'Radiation'),
+              ('hormonal_endocrine', 'Hormonal'),
+            ] %}
+            <button type="button"
+              @click="toggleModality('{{ code }}')"
+              :class="modalities.includes('{{ code }}')
+                ? 'bg-sage-500 text-white border-sage-500'
+                : 'bg-white text-stone-600 border-stone-300 hover:border-sage-300'"
+              class="px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors">
+              {{ label }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-stone-600 mb-1">{{ i18n.get('intake.cancer_type.label', 'Cancer Type') }}</label>
+          <input type="text" x-model="cancerType"
+                 placeholder="{{ i18n.get('intake.cancer_type.placeholder', 'e.g. Lung, Breast, Melanoma') }}"
+                 class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage-400">
+        </div>
+      </div>
+    </details>
+
+    <button @click="goToCapture()"
+            :disabled="!selectedAE"
+            class="w-full py-3.5 rounded-xl font-semibold text-sm
+                   bg-sage-600 hover:bg-sage-700 active:bg-sage-800 text-white
+                   disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-sage-600
+                   transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:ring-offset-2 shadow-sm">
+      {{ i18n.get('common.continue', 'Continue') }} →
+    </button>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- STEP 2 — Photo capture                      -->
+  <!-- ════════════════════════════════════════════ -->
+  <div x-show="step === 2" x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+
+    <div class="flex items-center gap-2 mb-4">
+      <button @click="step = 1" class="text-sage-600 hover:text-sage-700 transition-colors p-1 -ml-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <div>
+        <h2 class="text-base font-semibold text-stone-800" x-text="getLabel(selectedAE?.label)"></h2>
+        <p class="text-xs text-stone-500">{{ i18n.get('visual_triage.capture.subtitle', 'Take or upload a clear, close-up photo') }}</p>
+      </div>
+    </div>
+
+    <!-- Photo tips -->
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4">
+      <p class="text-xs font-semibold text-blue-800 mb-1.5">{{ i18n.get('visual_triage.capture.tips_title', 'Tips for best results:') }}</p>
+      <ul class="text-xs text-blue-700 space-y-1 list-none">
+        <li class="flex items-start gap-1.5">
+          <span class="text-blue-400 mt-0.5">•</span>
+          {{ i18n.get('visual_triage.capture.tip1', 'Take photo in natural daylight or bright indoor light') }}
+        </li>
+        <li class="flex items-start gap-1.5">
+          <span class="text-blue-400 mt-0.5">•</span>
+          {{ i18n.get('visual_triage.capture.tip2', 'Fill the frame with the affected area') }}
+        </li>
+        <li class="flex items-start gap-1.5">
+          <span class="text-blue-400 mt-0.5">•</span>
+          {{ i18n.get('visual_triage.capture.tip3', 'Hold steady — avoid blurry photos') }}
+        </li>
+        <li class="flex items-start gap-1.5">
+          <span class="text-blue-400 mt-0.5">•</span>
+          {{ i18n.get('visual_triage.capture.tip4', 'Include a small ruler or coin for scale if possible') }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Image preview area -->
+    <div class="relative mb-4">
+      <!-- No image yet -->
+      <div x-show="!previewUrl"
+           class="w-full aspect-video bg-stone-100 border-2 border-dashed border-stone-300 rounded-xl flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-stone-50 hover:border-sage-300 transition-colors"
+           @click="$refs.fileInput.click()">
+        <div class="w-14 h-14 rounded-2xl bg-stone-200 flex items-center justify-center">
+          <svg class="w-7 h-7 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        </div>
+        <div class="text-center">
+          <p class="text-sm font-semibold text-stone-700">{{ i18n.get('visual_triage.capture.tap_to_capture', 'Tap to take or choose a photo') }}</p>
+          <p class="text-xs text-stone-400 mt-0.5">JPEG · PNG · HEIC · max 10 MB</p>
+        </div>
+      </div>
+
+      <!-- Image preview -->
+      <div x-show="previewUrl" class="relative rounded-xl overflow-hidden bg-stone-900 aspect-video">
+        <img :src="previewUrl" alt="Selected photo" class="w-full h-full object-contain">
+        <div class="absolute top-2 right-2 flex gap-2">
+          <button @click="clearImage()"
+                  class="bg-black/60 text-white text-xs px-2.5 py-1.5 rounded-lg backdrop-blur-sm hover:bg-black/80 transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-white">
+            {{ i18n.get('visual_triage.capture.retake', 'Retake') }}
+          </button>
+        </div>
+        <div x-show="fileSizeWarning"
+             class="absolute bottom-0 left-0 right-0 bg-red-600/90 text-white text-xs px-3 py-2 text-center backdrop-blur-sm">
+          {{ i18n.get('visual_triage.capture.size_warning', 'File is too large (max 10 MB). Please choose a smaller image.') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file"
+           x-ref="fileInput"
+           accept="image/*"
+           class="hidden"
+           @change="handleFileSelect($event)">
+
+    <!-- Anatomical location selector -->
+    <div class="mb-4">
+      <label class="block text-xs font-medium text-stone-600 mb-2">{{ i18n.get('visual_triage.capture.location', 'Anatomical location (optional)') }}</label>
+      <div class="grid grid-cols-3 gap-2">
+        {% for loc in ['face', 'neck', 'chest', 'arms', 'hands', 'back', 'abdomen', 'legs', 'feet'] %}
+        <button type="button"
+          @click="toggleLocation('{{ loc }}')"
+          :class="selectedLocations.includes('{{ loc }}')
+            ? 'bg-sage-500 text-white border-sage-500'
+            : 'bg-white text-stone-600 border-stone-200 hover:border-sage-300'"
+          class="py-1.5 text-xs font-medium rounded-lg border transition-colors capitalize">
+          {{ loc }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div x-show="errorMsg" x-transition
+         class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700"
+         role="alert" aria-live="polite">
+      <span x-text="errorMsg"></span>
+    </div>
+
+    <div class="flex gap-3">
+      <button @click="step = 1"
+              class="flex-none px-4 py-3 rounded-xl border border-stone-200 text-stone-600 text-sm font-medium hover:bg-stone-50 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-300">
+        ← {{ i18n.get('common.back', 'Back') }}
+      </button>
+      <button @click="submitImage()"
+              :disabled="!selectedFile || fileSizeWarning"
+              class="flex-1 py-3 rounded-xl font-semibold text-sm
+                     bg-sage-600 hover:bg-sage-700 active:bg-sage-800 text-white
+                     disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-sage-600
+                     transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-sage-400 focus:ring-offset-2 shadow-sm">
+        {{ i18n.get('visual_triage.capture.analyze_btn', 'Analyze Photo') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- STEP 3 — Analyzing (loading state)           -->
+  <!-- ════════════════════════════════════════════ -->
+  <div x-show="step === 3" x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+       class="text-center py-10">
+    <!-- Animated spinner (hidden when error card shows) -->
+    <div x-show="!analysisError" class="flex justify-center mb-6">
+      <div class="relative w-20 h-20">
+        <svg class="animate-spin w-20 h-20 text-sage-500" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+          <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <svg class="w-7 h-7 text-sage-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <h2 x-show="!analysisError" class="text-lg font-semibold text-stone-800 mb-2">
+      {{ i18n.get('visual_triage.processing.title', 'Analyzing your photo') }}
+    </h2>
+    <p x-show="!analysisError" class="text-sm text-stone-500 mb-6" x-text="processingMessage" aria-live="polite"></p>
+
+    <!-- Progress steps (spinner state) -->
+    <div x-show="!analysisError" class="max-w-xs mx-auto space-y-2.5 text-left">
+      <template x-for="(msg, idx) in processingSteps" :key="idx">
+        <div class="flex items-center gap-2.5">
+          <div :class="processingStep > idx ? 'bg-sage-500 text-white' : processingStep === idx ? 'bg-sage-100 border-2 border-sage-400' : 'bg-stone-100'"
+               class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300">
+            <template x-if="processingStep > idx">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </template>
+            <template x-if="processingStep === idx">
+              <div class="w-2 h-2 bg-sage-500 rounded-full animate-pulse"></div>
+            </template>
+          </div>
+          <p :class="processingStep > idx ? 'text-stone-600' : processingStep === idx ? 'text-sage-700 font-medium' : 'text-stone-400'"
+             class="text-xs transition-colors" x-text="msg"></p>
+        </div>
+      </template>
+    </div>
+
+    <!-- Error card (provider failure) -->
+    <template x-if="analysisError">
+      <div class="mt-6 max-w-sm mx-auto text-left">
+        <div class="rounded-2xl border border-orange-200 bg-orange-50 p-5 space-y-4">
+          <!-- Icon + title -->
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-orange-900">Vision service temporarily unavailable</p>
+              <p class="text-xs text-orange-700 mt-0.5" x-text="analysisError.message"></p>
+            </div>
+          </div>
+
+          <!-- Retry countdown -->
+          <div x-show="retryCountdown > 0" class="text-xs text-orange-600 font-medium text-center">
+            Auto-retry available in <span x-text="retryCountdown" class="font-bold tabular-nums"></span>s
+          </div>
+
+          <!-- Buttons -->
+          <div class="space-y-2">
+            <button @click="retryAnalysis()"
+                    :disabled="retryCountdown > 0"
+                    class="w-full py-2.5 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2">
+              <span x-text="retryCountdown > 0 ? `Retry in ${retryCountdown}s` : 'Try again'"></span>
+            </button>
+            <button @click="skipToSymptomTriage()"
+                    class="w-full py-2.5 rounded-xl border border-orange-300 text-orange-700 text-sm font-medium hover:bg-orange-100 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-300">
+              Continue without photo analysis
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <!-- ════════════════════════════════════════════ -->
+  <!-- STEP 4 — Result                             -->
+  <!-- ════════════════════════════════════════════ -->
+  <div x-show="step === 4" x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+
+    <!-- RETAKE REQUIRED -->
+    <template x-if="result && result.status === 'retake_required'">
+      <div class="text-center py-6">
+        <div class="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+        </div>
+        <h2 class="text-lg font-bold text-stone-800 mb-2">{{ i18n.get('visual_triage.result.retake_title', 'Photo Quality Insufficient') }}</h2>
+        <p class="text-sm text-stone-600 mb-2 max-w-sm mx-auto" x-text="result?.assessment?.image_quality?.issues?.join(', ') || 'Image unclear'"></p>
+        <div x-show="result?.assessment?.image_quality?.issues?.length > 0"
+             class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-5 max-w-sm mx-auto text-left">
+          <p class="text-xs font-medium text-amber-800 mb-1">Issues detected:</p>
+          <ul class="text-xs text-amber-700 space-y-0.5">
+            <template x-for="issue in result?.assessment?.image_quality?.issues || []" :key="issue">
+              <li x-text="issue.replace('_', ' ')"></li>
+            </template>
+          </ul>
+        </div>
+        <button @click="retake()"
+                class="bg-sage-600 hover:bg-sage-700 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-sage-400 focus:ring-offset-2">
+          {{ i18n.get('visual_triage.capture.retake', 'Retake Photo') }}
+        </button>
+      </div>
+    </template>
+
+    <!-- SUCCESS or AMBIGUOUS -->
+    <template x-if="result && result.status !== 'retake_required'">
+      <div class="space-y-4">
+
+        <!-- Image thumbnail + triage level side by side -->
+        <div class="flex gap-3">
+          <!-- Thumbnail (ephemeral data URL — never stored) -->
+          <div x-show="result?.thumbnail_data_url" class="flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden bg-stone-100 border border-stone-200">
+            <img :src="result?.thumbnail_data_url" alt="Analyzed photo" class="w-full h-full object-cover">
+          </div>
+
+          <!-- Triage level card -->
+          <div class="flex-1 rounded-xl border-2 p-3 flex flex-col justify-center"
+               :class="triageLevelStyle(result?.triage_level)">
+            <div class="text-xs font-semibold uppercase tracking-wide opacity-70 mb-0.5"
+                 x-text="result?.status === 'ambiguous' ? 'Needs Review' : 'Triage Level'"></div>
+            <div class="text-xl font-bold leading-none mb-1" x-text="result?.triage_level || '—'"></div>
+            <div class="text-xs leading-snug opacity-80" x-text="triageLevelAction(result?.triage_level)"></div>
+          </div>
+        </div>
+
+        <!-- irAE alert -->
+        <div x-show="result?.irae_suspected"
+             class="p-3 bg-purple-50 border border-purple-300 rounded-xl text-xs text-purple-800 leading-relaxed">
+          <strong>Immune-Related AE Alert:</strong>
+          {{ i18n.get('triage.irae_alert', 'Symptoms may indicate an immune-related adverse event. Early detection and intervention are critical.') }}
+        </div>
+
+        <!-- Severity (patient-friendly) + visual findings -->
+        <div x-show="result?.assessment?.ctcae_grade_visual" class="bg-white border border-stone-200 rounded-xl p-4">
+          <div class="flex items-start justify-between mb-3">
+            <h3 class="text-sm font-semibold text-stone-700">Severity</h3>
+            <span x-text="gradeToSeverity(result?.assessment?.ctcae_grade_visual?.grade)"
+                  :class="ctcaeGradeBadgeColor(result?.assessment?.ctcae_grade_visual?.grade)"
+                  class="px-2.5 py-0.5 rounded-full text-xs font-bold"></span>
+          </div>
+          <p class="text-xs text-stone-600 leading-relaxed mb-2 italic"
+             x-text="`“${result?.assessment?.ctcae_grade_visual?.ctcae_descriptor}”`"></p>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] text-stone-400 font-medium uppercase tracking-wide">Confidence:</span>
+            <span class="text-[10px] font-semibold"
+                  :class="result?.assessment?.ctcae_grade_visual?.confidence === 'high' ? 'text-green-600' : result?.assessment?.ctcae_grade_visual?.confidence === 'moderate' ? 'text-amber-600' : 'text-red-500'"
+                  x-text="result?.assessment?.ctcae_grade_visual?.confidence"></span>
+          </div>
+        </div>
+
+        <!-- Visual findings -->
+        <div x-show="result?.assessment?.visual_findings" class="bg-white border border-stone-200 rounded-xl p-4">
+          <h3 class="text-sm font-semibold text-stone-700 mb-3">Visual Findings</h3>
+          <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+            <div>
+              <dt class="text-stone-400 font-medium uppercase tracking-wide text-[10px]">Body Area Affected</dt>
+              <dd class="text-stone-700 font-semibold" x-text="`${result?.assessment?.visual_findings?.body_surface_area_percent_estimate ?? '—'}%`"></dd>
+            </div>
+            <div>
+              <dt class="text-stone-400 font-medium uppercase tracking-wide text-[10px]">Spread</dt>
+              <dd class="text-stone-700 font-semibold capitalize" x-text="result?.assessment?.visual_findings?.distribution ?? '—'"></dd>
+            </div>
+            <div>
+              <dt class="text-stone-400 font-medium uppercase tracking-wide text-[10px]">Location</dt>
+              <dd class="text-stone-700 font-semibold"
+                  x-text="result?.assessment?.visual_findings?.anatomical_site || result?.anatomical_location_hint || '—'"></dd>
+            </div>
+            <div>
+              <dt class="text-stone-400 font-medium uppercase tracking-wide text-[10px]">Appearance</dt>
+              <dd class="text-stone-700 font-semibold" x-text="(result?.assessment?.visual_findings?.primary_morphology || []).join(', ') || '—'"></dd>
+            </div>
+          </dl>
+          <div x-show="result?.assessment?.visual_findings?.secondary_features?.length > 0" class="mt-2.5 pt-2.5 border-t border-stone-100">
+            <dt class="text-stone-400 font-medium uppercase tracking-wide text-[10px] mb-1">Additional features</dt>
+            <dd class="text-stone-700 text-xs" x-text="(result?.assessment?.visual_findings?.secondary_features || []).join(', ')"></dd>
+          </div>
+        </div>
+
+        <!-- AE match explanation -->
+        <div class="bg-stone-50 border border-stone-200 rounded-xl p-4">
+          <h3 class="text-sm font-semibold text-stone-700 mb-2">What the AI found</h3>
+          <p class="text-xs text-stone-600 leading-relaxed" x-text="result?.assessment?.ae_match_explanation"></p>
+        </div>
+
+        <!-- Caveats -->
+        <div x-show="result?.assessment?.caveats?.length > 0"
+             class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
+          <p class="text-xs font-semibold text-amber-800 mb-1.5">Important caveats</p>
+          <ul class="text-xs text-amber-700 space-y-1">
+            <template x-for="caveat in result?.assessment?.caveats || []" :key="caveat">
+              <li class="flex items-start gap-1.5">
+                <span class="text-amber-400 mt-0.5">•</span>
+                <span x-text="caveat"></span>
+              </li>
+            </template>
+          </ul>
+        </div>
+
+        <!-- OpenFDA enrichment -->
+        <div x-show="result?.enrichment?.openfda_summary" class="bg-blue-50 border border-blue-200 rounded-xl p-3">
+          <p class="text-[10px] font-semibold text-blue-800 uppercase tracking-wide mb-1">FDA Adverse Event Reports</p>
+          <p class="text-xs text-blue-700" x-text="result?.enrichment?.openfda_summary"></p>
+        </div>
+
+        <!-- Collapsible clinical details (for clinician handoff) -->
+        <details class="border border-stone-200 rounded-xl overflow-hidden">
+          <summary class="px-4 py-3 text-sm font-medium text-stone-600 cursor-pointer bg-stone-50 hover:bg-stone-100 select-none flex items-center justify-between">
+            <span>Clinical details</span>
+            <svg class="w-4 h-4 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div class="p-4 space-y-3">
+
+            <!-- CTCAE grade number -->
+            <div x-show="result?.assessment?.ctcae_grade_visual" class="flex items-center gap-2">
+              <span class="text-xs text-stone-500 font-medium">CTCAE v5.0 Grade:</span>
+              <span x-text="`Grade ${result?.assessment?.ctcae_grade_visual?.grade ?? '—'}`"
+                    :class="ctcaeGradeBadgeColor(result?.assessment?.ctcae_grade_visual?.grade)"
+                    class="px-2 py-0.5 rounded-full text-xs font-bold"></span>
+            </div>
+
+            <!-- Clinical rules applied -->
+            <div x-show="result?.triage_rules?.length > 0">
+              <p class="text-xs font-semibold text-stone-600 mb-2">Clinical Rules Applied</p>
+              <div class="space-y-2">
+                <template x-for="rule in result?.triage_rules || []" :key="rule.id">
+                  <div class="p-2.5 bg-stone-50 rounded-lg border border-stone-100">
+                    <p class="text-xs font-medium text-stone-700" x-text="rule.name || rule.id"></p>
+                    <p class="text-[11px] text-stone-500 mt-0.5 leading-relaxed" x-text="rule.reasoning"></p>
+                    <p x-show="rule.citation" class="text-[10px] text-sage-600 mt-1 font-medium" x-text="rule.citation"></p>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Primary literature -->
+            <div x-show="result?.enrichment?.pubmed_citations?.length > 0">
+              <p class="text-xs font-semibold text-stone-600 mb-2">Primary Literature</p>
+          <div class="space-y-2">
+            <template x-for="(cit, idx) in result?.enrichment?.pubmed_citations || []" :key="cit.pmid">
+              <div class="flex items-start gap-2">
+                <span class="text-[10px] font-bold text-stone-400 mt-0.5 w-4 flex-shrink-0" x-text="idx+1"></span>
+                <div>
+                  <a :href="cit.url" target="_blank" rel="noopener"
+                     class="text-xs text-sage-700 hover:text-sage-900 font-medium hover:underline" x-text="cit.title"></a>
+                  <p class="text-[10px] text-stone-400 mt-0.5" x-text="`${cit.authors} — ${cit.journal} (${cit.year})`"></p>
+                </div>
+              </div>
+            </template>
+          </div>
+            </div>
+
+          </div><!-- /p-4 space-y-3 -->
+        </details>
+
+        <!-- Provider badge -->
+        <div x-show="result?.provider_used" class="flex items-center justify-center gap-1.5">
+          <svg class="w-3 h-3 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+          </svg>
+          <span class="text-[10px] text-stone-400"
+                x-text="`Analyzed by: ${result?.provider_used} ${result?.model_used ? '· ' + result.model_used : ''}`"></span>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="flex gap-3 pt-2">
+          <button @click="retake()"
+                  class="flex-1 py-3 rounded-xl border border-stone-200 text-stone-600 text-sm font-medium hover:bg-stone-50 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-300">
+            {{ i18n.get('visual_triage.capture.retake', 'Retake Photo') }}
+          </button>
+          <a href="/"
+             class="flex-1 py-3 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-sm font-semibold text-center transition-colors focus:outline-none focus:ring-2 focus:ring-sage-400 focus:ring-offset-2">
+            {{ i18n.get('common.new_assessment', 'New Assessment') }}
+          </a>
+        </div>
+
+        <!-- Privacy note -->
+        <p class="text-[10px] text-stone-400 text-center leading-relaxed px-4">
+          {{ i18n.get('visual_triage.privacy_note', 'Your photo was analyzed in memory only. No image data was stored on our servers.') }}
+        </p>
+      </div>
+    </template>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/visual_triage.js"></script>
+{% endblock %}

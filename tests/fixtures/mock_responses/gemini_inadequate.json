@@ -1,0 +1,13 @@
+{
+  "image_quality": {
+    "adequate": false,
+    "issues": ["blurry", "poor_lighting"],
+    "retake_recommended": true
+  },
+  "ae_match": false,
+  "ae_match_explanation": "Image quality is insufficient for assessment. The photo is blurry and poorly lit.",
+  "visual_findings": null,
+  "ctcae_grade_visual": null,
+  "caveats": ["Please retake the photo with better lighting and hold steady."],
+  "language": "en"
+}

@@ -1,0 +1,893 @@
+{
+  "version": "2020",
+  "source": "Pan-Canadian Oncology Symptom Triage and Remote Support (COSTaRS) Practice Guides",
+  "institution": "University of Ottawa School of Nursing",
+  "principal_investigator": "Stacey D, Carley M, Ballantyne B, et al.",
+  "citation": "Stacey D, Carley M, Ballantyne B, et al. Pan-Canadian Oncology Symptom Triage and Remote Support (COSTaRS) Practice Guides. Ottawa: University of Ottawa; 2020.",
+  "license": "CC BY-NC-ND 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "ktcanada_url": "https://ktcanada.ohri.ca/costars/",
+  "protocols": {
+    "anorexia": {
+      "id": "anorexia",
+      "names": {"en": "Anorexia / Loss of Appetite", "fr": "Anorexie / Perte d'appétit", "ar": "فقدان الشهية"},
+      "ctcae_mapping": "CTCAE v5.0: Anorexia (10002972)",
+      "assessment": {
+        "questions": [
+          {"id": "appetite_loss_days", "type": "number", "unit": "days", "label_key": "anorexia.q.days"},
+          {"id": "weight_loss_kg", "type": "number", "unit": "kg", "label_key": "anorexia.q.weight_loss"},
+          {"id": "oral_intake", "type": "select", "options": ["normal", "reduced_half", "minimal", "none"], "label_key": "anorexia.q.intake"},
+          {"id": "nausea_present", "type": "boolean", "label_key": "anorexia.q.nausea"},
+          {"id": "swallowing_difficulty", "type": "boolean", "label_key": "anorexia.q.swallowing"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Loss of appetite without alteration in eating habits", "ctcae": "Grade 1", "level": "mild"},
+        "grade_2": {"criteria": "Oral intake altered without significant weight loss or malnutrition", "ctcae": "Grade 2", "level": "moderate"},
+        "grade_3": {"criteria": "Inadequate oral caloric or fluid intake; tube feeding or TPN indicated", "ctcae": "Grade 3", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences; urgent intervention indicated", "ctcae": "Grade 4", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "anorexia_severe",
+          "condition": "grade >= 3",
+          "tier": "urgent",
+          "rationale_key": "anorexia.rule.severe",
+          "citation": "COSTaRS v2020 Anorexia Protocol; NCCN Survivorship v2.2024"
+        },
+        {
+          "id": "anorexia_weight_loss",
+          "condition": "weight_loss_kg >= 5 OR (weight_loss_pct >= 5 AND days <= 30)",
+          "tier": "routine",
+          "rationale_key": "anorexia.rule.weight_loss",
+          "citation": "COSTaRS v2020 Anorexia Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "anorexia.care.small_meals"},
+        {"key": "anorexia.care.calorie_dense"},
+        {"key": "anorexia.care.oral_supplements"}
+      ]
+    },
+    "anxiety": {
+      "id": "anxiety",
+      "names": {"en": "Anxiety", "fr": "Anxiété", "ar": "القلق"},
+      "ctcae_mapping": "CTCAE v5.0: Anxiety (10002855)",
+      "assessment": {
+        "questions": [
+          {"id": "anxiety_severity", "type": "select", "options": ["mild", "moderate", "severe"], "label_key": "anxiety.q.severity"},
+          {"id": "duration_days", "type": "number", "unit": "days", "label_key": "anxiety.q.duration"},
+          {"id": "panic_attacks", "type": "boolean", "label_key": "anxiety.q.panic"},
+          {"id": "daily_function_impact", "type": "boolean", "label_key": "anxiety.q.function"},
+          {"id": "suicidal_ideation", "type": "boolean", "label_key": "anxiety.q.suicidal", "warning": true}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Mild symptoms; intervention not indicated", "level": "mild"},
+        "grade_2": {"criteria": "Moderate symptoms; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Severe symptoms; limiting self-care ADL; hospitalization indicated", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening; urgent intervention indicated", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "anxiety_suicidal",
+          "condition": "suicidal_ideation == true",
+          "tier": "emergency",
+          "rationale_key": "anxiety.rule.suicidal",
+          "citation": "COSTaRS v2020 Anxiety Protocol; Canadian Mental Health Crisis Guidelines"
+        },
+        {
+          "id": "anxiety_panic",
+          "condition": "panic_attacks == true AND grade >= 2",
+          "tier": "urgent",
+          "rationale_key": "anxiety.rule.panic",
+          "citation": "COSTaRS v2020 Anxiety Protocol"
+        },
+        {
+          "id": "anxiety_moderate",
+          "condition": "grade >= 2 AND daily_function_impact == true",
+          "tier": "routine",
+          "rationale_key": "anxiety.rule.moderate",
+          "citation": "COSTaRS v2020 Anxiety Protocol; NCCN Distress Management v3.2024"
+        }
+      ],
+      "self_care": [
+        {"key": "anxiety.care.relaxation"},
+        {"key": "anxiety.care.breathing"},
+        {"key": "anxiety.care.support_resources"}
+      ]
+    },
+    "bleeding": {
+      "id": "bleeding",
+      "names": {"en": "Bleeding / Bruising", "fr": "Saignement / Ecchymose", "ar": "نزيف / كدمات"},
+      "ctcae_mapping": "CTCAE v5.0: Platelet count decreased (10033677); Hemorrhage (10055798)",
+      "assessment": {
+        "questions": [
+          {"id": "bleeding_site", "type": "multiselect", "options": ["skin_bruising", "petechiae", "nose", "gum", "vaginal", "rectal", "urine", "vomit", "cough", "wound"], "label_key": "bleeding.q.site"},
+          {"id": "amount_estimate", "type": "select", "options": ["spots_or_petechiae", "minor_less_tablespoon", "moderate_tablespoon_to_cup", "heavy_more_than_cup"], "label_key": "bleeding.q.amount"},
+          {"id": "duration_hours", "type": "number", "unit": "h", "label_key": "bleeding.q.duration"},
+          {"id": "platelet_history", "type": "boolean", "label_key": "bleeding.q.platelet_history"},
+          {"id": "anticoagulant", "type": "boolean", "label_key": "bleeding.q.anticoagulant"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Mild bleeding; petechiae; minor bruising; no intervention needed", "level": "mild"},
+        "grade_2": {"criteria": "Moderate bleeding; medical intervention or minor cauterization indicated", "level": "moderate"},
+        "grade_3": {"criteria": "Severe bleeding; transfusion, radiologic, endoscopic or operative intervention indicated", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences; urgent intervention indicated", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "bleeding_life_threatening",
+          "condition": "grade >= 4 OR amount_estimate == 'heavy_more_than_cup'",
+          "tier": "emergency",
+          "rationale_key": "bleeding.rule.life_threatening",
+          "citation": "COSTaRS v2020 Bleeding Protocol; NCCN Hematopoietic Growth Factors v2.2024"
+        },
+        {
+          "id": "bleeding_internal_signs",
+          "condition": "bleeding_site contains ['vomit', 'cough'] AND amount_estimate != 'spots_or_petechiae'",
+          "tier": "emergency",
+          "rationale_key": "bleeding.rule.internal",
+          "citation": "COSTaRS v2020 Bleeding Protocol"
+        },
+        {
+          "id": "bleeding_with_thrombocytopenia",
+          "condition": "grade >= 1 AND platelet_history == true",
+          "tier": "urgent",
+          "rationale_key": "bleeding.rule.thrombocytopenia",
+          "citation": "COSTaRS v2020 Bleeding Protocol; Schiffer CA et al. JCO 2018"
+        },
+        {
+          "id": "bleeding_moderate",
+          "condition": "grade >= 2",
+          "tier": "urgent",
+          "rationale_key": "bleeding.rule.moderate",
+          "citation": "COSTaRS v2020 Bleeding Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "bleeding.care.pressure"},
+        {"key": "bleeding.care.soft_toothbrush"},
+        {"key": "bleeding.care.avoid_nsaids", "warning": true}
+      ]
+    },
+    "constipation": {
+      "id": "constipation",
+      "names": {"en": "Constipation", "fr": "Constipation", "ar": "الإمساك"},
+      "ctcae_mapping": "CTCAE v5.0: Constipation (10010774)",
+      "assessment": {
+        "questions": [
+          {"id": "days_no_bowel_movement", "type": "number", "unit": "days", "label_key": "constipation.q.days"},
+          {"id": "abdominal_pain", "type": "boolean", "label_key": "constipation.q.abdominal_pain"},
+          {"id": "abdominal_distension", "type": "boolean", "label_key": "constipation.q.distension"},
+          {"id": "nausea_vomiting", "type": "boolean", "label_key": "constipation.q.nausea"},
+          {"id": "rectal_bleeding", "type": "boolean", "label_key": "constipation.q.rectal_bleed"},
+          {"id": "laxative_use", "type": "boolean", "label_key": "constipation.q.laxative"},
+          {"id": "opioid_use", "type": "boolean", "label_key": "constipation.q.opioid"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Occasional constipation; occasional use of laxatives", "level": "mild"},
+        "grade_2": {"criteria": "Persistent constipation with regular laxative use; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Obstipation with manual evacuation; limiting self-care ADL", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences; urgent operative intervention", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "constipation_obstipation",
+          "condition": "grade >= 4 OR (abdominal_distension == true AND nausea_vomiting == true AND days_no_bowel_movement >= 5)",
+          "tier": "emergency",
+          "rationale_key": "constipation.rule.obstipation",
+          "citation": "COSTaRS v2020 Constipation Protocol; NCCN Supportive Care"
+        },
+        {
+          "id": "constipation_severe",
+          "condition": "grade >= 3 OR days_no_bowel_movement >= 5",
+          "tier": "urgent",
+          "rationale_key": "constipation.rule.severe",
+          "citation": "COSTaRS v2020 Constipation Protocol"
+        },
+        {
+          "id": "constipation_opioid",
+          "condition": "grade >= 2 AND opioid_use == true",
+          "tier": "routine",
+          "rationale_key": "constipation.rule.opioid",
+          "citation": "COSTaRS v2020 Constipation Protocol; NCCN Adult Cancer Pain v2.2024"
+        }
+      ],
+      "self_care": [
+        {"key": "constipation.care.hydration"},
+        {"key": "constipation.care.fiber"},
+        {"key": "constipation.care.stool_softener"},
+        {"key": "constipation.care.activity"}
+      ]
+    },
+    "depression": {
+      "id": "depression",
+      "names": {"en": "Depression / Low Mood", "fr": "Dépression / Humeur dépressive", "ar": "الاكتئاب / انخفاض المزاج"},
+      "ctcae_mapping": "CTCAE v5.0: Depression (10012378)",
+      "assessment": {
+        "questions": [
+          {"id": "mood_severity", "type": "select", "options": ["mild", "moderate", "severe"], "label_key": "depression.q.severity"},
+          {"id": "duration_weeks", "type": "number", "unit": "weeks", "label_key": "depression.q.duration"},
+          {"id": "hopelessness", "type": "boolean", "label_key": "depression.q.hopelessness"},
+          {"id": "suicidal_ideation", "type": "boolean", "label_key": "depression.q.suicidal", "warning": true},
+          {"id": "self_harm", "type": "boolean", "label_key": "depression.q.self_harm", "warning": true},
+          {"id": "daily_function_impact", "type": "boolean", "label_key": "depression.q.function"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Mild depressive symptoms; functioning maintained", "level": "mild"},
+        "grade_2": {"criteria": "Moderate symptoms; limiting instrumental ADL; pharmacologic intervention indicated", "level": "moderate"},
+        "grade_3": {"criteria": "Severe symptoms; limiting self-care ADL; hospitalization indicated", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "depression_suicidal",
+          "condition": "suicidal_ideation == true OR self_harm == true",
+          "tier": "emergency",
+          "rationale_key": "depression.rule.suicidal",
+          "citation": "COSTaRS v2020 Depression Protocol; Canadian Mental Health Crisis Guidelines"
+        },
+        {
+          "id": "depression_severe",
+          "condition": "grade >= 3",
+          "tier": "urgent",
+          "rationale_key": "depression.rule.severe",
+          "citation": "COSTaRS v2020 Depression Protocol; NCCN Distress Management v3.2024"
+        },
+        {
+          "id": "depression_moderate",
+          "condition": "grade >= 2 AND duration_weeks >= 2",
+          "tier": "routine",
+          "rationale_key": "depression.rule.moderate",
+          "citation": "COSTaRS v2020 Depression Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "depression.care.support_line"},
+        {"key": "depression.care.counseling"},
+        {"key": "depression.care.physical_activity"}
+      ]
+    },
+    "diarrhea": {
+      "id": "diarrhea",
+      "names": {"en": "Diarrhea", "fr": "Diarrhée", "ar": "الإسهال"},
+      "ctcae_mapping": "CTCAE v5.0: Diarrhea (10012735)",
+      "assessment": {
+        "questions": [
+          {"id": "stools_above_baseline", "type": "number", "label_key": "diarrhea.q.stools"},
+          {"id": "duration_hours", "type": "number", "unit": "h", "label_key": "diarrhea.q.duration"},
+          {"id": "blood_in_stool", "type": "boolean", "label_key": "diarrhea.q.blood"},
+          {"id": "dehydration_signs", "type": "multiselect", "options": ["dry_mouth", "decreased_urination", "dizziness", "weakness"], "label_key": "diarrhea.q.dehydration"},
+          {"id": "recent_immunotherapy", "type": "boolean", "label_key": "diarrhea.q.immunotherapy"},
+          {"id": "cramping_pain", "type": "boolean", "label_key": "diarrhea.q.cramping"},
+          {"id": "fever", "type": "boolean", "label_key": "diarrhea.q.fever"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Increase of <4 stools/day above baseline", "level": "mild"},
+        "grade_2": {"criteria": "Increase of 4-6 stools/day above baseline; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Increase of ≥7 stools/day; hospitalization indicated; limiting self-care ADL", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences; urgent intervention indicated", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "diarrhea_blood_fever",
+          "condition": "blood_in_stool == true AND fever == true",
+          "tier": "emergency",
+          "rationale_key": "diarrhea.rule.blood_fever",
+          "citation": "COSTaRS v2020 Diarrhea Protocol; NCCN Survivorship v2.2024"
+        },
+        {
+          "id": "diarrhea_severe_dehydration",
+          "condition": "grade >= 3",
+          "tier": "urgent",
+          "rationale_key": "diarrhea.rule.severe",
+          "citation": "COSTaRS v2020 Diarrhea Protocol; Benson AB et al. JCO 2004"
+        },
+        {
+          "id": "diarrhea_irae_colitis",
+          "condition": "grade >= 2 AND recent_immunotherapy == true",
+          "tier": "urgent",
+          "rationale_key": "diarrhea.rule.irae_colitis",
+          "citation": "COSTaRS v2020 Diarrhea Protocol; Schneider BJ et al. JCO 2021; NCCN irAE v1.2024"
+        },
+        {
+          "id": "diarrhea_moderate",
+          "condition": "grade >= 2",
+          "tier": "routine",
+          "rationale_key": "diarrhea.rule.moderate",
+          "citation": "COSTaRS v2020 Diarrhea Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "diarrhea.care.brat_diet"},
+        {"key": "diarrhea.care.hydration"},
+        {"key": "diarrhea.care.loperamide", "note": "only if no blood, no fever, no immunotherapy"},
+        {"key": "diarrhea.care.avoid_dairy"}
+      ]
+    },
+    "dyspnea": {
+      "id": "dyspnea",
+      "names": {"en": "Shortness of Breath", "fr": "Essoufflement / Dyspnée", "ar": "ضيق التنفس"},
+      "ctcae_mapping": "CTCAE v5.0: Dyspnea (10013968)",
+      "assessment": {
+        "questions": [
+          {"id": "onset", "type": "select", "options": ["sudden_minutes", "hours", "days_to_weeks"], "label_key": "dyspnea.q.onset"},
+          {"id": "at_rest", "type": "boolean", "label_key": "dyspnea.q.at_rest"},
+          {"id": "exertion_trigger", "type": "select", "options": ["rest", "minimal", "moderate", "strenuous_only"], "label_key": "dyspnea.q.exertion"},
+          {"id": "chest_pain", "type": "boolean", "label_key": "dyspnea.q.chest_pain"},
+          {"id": "cough_type", "type": "select", "options": ["none", "dry", "productive", "blood_tinged"], "label_key": "dyspnea.q.cough"},
+          {"id": "oxygen_saturation", "type": "number", "unit": "%", "label_key": "dyspnea.q.spo2"},
+          {"id": "recent_immunotherapy", "type": "boolean", "label_key": "dyspnea.q.immunotherapy"},
+          {"id": "leg_swelling", "type": "boolean", "label_key": "dyspnea.q.leg_swelling"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Shortness of breath with moderate exertion", "level": "mild"},
+        "grade_2": {"criteria": "Shortness of breath with minimal exertion; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Shortness of breath at rest; limiting self-care ADL", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening respiratory compromise; urgent intubation or tracheotomy indicated", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "dyspnea_at_rest",
+          "condition": "at_rest == true OR grade >= 3",
+          "tier": "emergency",
+          "rationale_key": "dyspnea.rule.at_rest",
+          "citation": "COSTaRS v2020 Dyspnea Protocol; CTCAE v5.0 Grade 3 Dyspnea"
+        },
+        {
+          "id": "dyspnea_pe_pattern",
+          "condition": "onset == 'sudden_minutes' AND (chest_pain == true OR leg_swelling == true)",
+          "tier": "emergency",
+          "rationale_key": "dyspnea.rule.pe",
+          "citation": "COSTaRS v2020 Dyspnea Protocol; Khorana AA et al. JTH 2007"
+        },
+        {
+          "id": "dyspnea_low_spo2",
+          "condition": "oxygen_saturation < 92",
+          "tier": "emergency",
+          "rationale_key": "dyspnea.rule.low_spo2",
+          "citation": "COSTaRS v2020 Dyspnea Protocol"
+        },
+        {
+          "id": "dyspnea_irae_pneumonitis",
+          "condition": "recent_immunotherapy == true AND grade >= 1",
+          "tier": "urgent",
+          "rationale_key": "dyspnea.rule.irae_pneumonitis",
+          "citation": "COSTaRS v2020 Dyspnea Protocol; Schneider BJ et al. JCO 2021; NCCN irAE v1.2024"
+        },
+        {
+          "id": "dyspnea_moderate",
+          "condition": "grade >= 2",
+          "tier": "urgent",
+          "rationale_key": "dyspnea.rule.moderate",
+          "citation": "COSTaRS v2020 Dyspnea Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "dyspnea.care.positioning"},
+        {"key": "dyspnea.care.fan_cool_air"},
+        {"key": "dyspnea.care.pacing"}
+      ]
+    },
+    "fatigue": {
+      "id": "fatigue",
+      "names": {"en": "Fatigue", "fr": "Fatigue", "ar": "التعب"},
+      "ctcae_mapping": "CTCAE v5.0: Fatigue (10016256)",
+      "assessment": {
+        "questions": [
+          {"id": "severity_0_10", "type": "number", "unit": "/10", "label_key": "fatigue.q.severity"},
+          {"id": "relieved_by_rest", "type": "boolean", "label_key": "fatigue.q.rest"},
+          {"id": "duration_days", "type": "number", "unit": "days", "label_key": "fatigue.q.duration"},
+          {"id": "adl_impact", "type": "select", "options": ["none", "instrumental_only", "self_care"], "label_key": "fatigue.q.adl"},
+          {"id": "new_sudden_onset", "type": "boolean", "label_key": "fatigue.q.sudden"},
+          {"id": "pallor", "type": "boolean", "label_key": "fatigue.q.pallor"},
+          {"id": "dyspnea_concurrent", "type": "boolean", "label_key": "fatigue.q.dyspnea"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Fatigue relieved by rest", "level": "mild"},
+        "grade_2": {"criteria": "Fatigue not relieved by rest; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Fatigue not relieved by rest; limiting self-care ADL", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "fatigue_anemia_signs",
+          "condition": "pallor == true AND dyspnea_concurrent == true AND new_sudden_onset == true",
+          "tier": "urgent",
+          "rationale_key": "fatigue.rule.anemia",
+          "citation": "COSTaRS v2020 Fatigue Protocol; NCCN Cancer-Related Fatigue v2.2024"
+        },
+        {
+          "id": "fatigue_severe",
+          "condition": "grade >= 3",
+          "tier": "routine",
+          "rationale_key": "fatigue.rule.severe",
+          "citation": "COSTaRS v2020 Fatigue Protocol; Bower JE et al. JCO 2014"
+        },
+        {
+          "id": "fatigue_moderate",
+          "condition": "grade >= 2",
+          "tier": "routine",
+          "rationale_key": "fatigue.rule.moderate",
+          "citation": "COSTaRS v2020 Fatigue Protocol; NCCN Cancer-Related Fatigue v2.2024"
+        }
+      ],
+      "self_care": [
+        {"key": "fatigue.care.energy_conservation"},
+        {"key": "fatigue.care.exercise", "note": "NCCN: moderate aerobic exercise is first-line treatment"},
+        {"key": "fatigue.care.sleep_hygiene"},
+        {"key": "fatigue.care.nutrition"}
+      ]
+    },
+    "fever": {
+      "id": "fever",
+      "names": {"en": "Fever", "fr": "Fièvre", "ar": "الحمى"},
+      "ctcae_mapping": "CTCAE v5.0: Fever (10016558)",
+      "assessment": {
+        "questions": [
+          {"id": "temp_celsius", "type": "number", "unit": "°C", "label_key": "fever.q.temp"},
+          {"id": "duration_hours", "type": "number", "unit": "h", "label_key": "fever.q.duration"},
+          {"id": "chills_rigors", "type": "boolean", "label_key": "fever.q.chills"},
+          {"id": "recent_chemo_days", "type": "number", "unit": "days", "label_key": "fever.q.recent_chemo"},
+          {"id": "hypotension_signs", "type": "boolean", "label_key": "fever.q.hypotension"},
+          {"id": "altered_consciousness", "type": "boolean", "label_key": "fever.q.consciousness"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "38.0–39.0°C (100.4–102.2°F)", "threshold_low": 38.0, "threshold_high": 39.0, "level": "mild"},
+        "grade_2": {"criteria": "39.1–40.0°C (102.3–104.0°F)", "threshold_low": 39.1, "threshold_high": 40.0, "level": "moderate"},
+        "grade_3": {"criteria": ">40.0°C for ≤24 hours", "threshold_low": 40.1, "level": "severe"},
+        "grade_4": {"criteria": ">40.0°C for >24 hours", "threshold_low": 40.1, "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "febrile_neutropenia_single",
+          "condition": "temp_celsius >= 38.3 AND recent_chemo_days <= 14",
+          "tier": "emergency",
+          "rationale_key": "fever.rule.febrile_neutropenia_single",
+          "citation": "COSTaRS v2020 Fever Protocol; NCCN Prevention and Treatment of Cancer-Related Infections v2.2024; Freifeld AG et al. CID 2011"
+        },
+        {
+          "id": "febrile_neutropenia_sustained",
+          "condition": "temp_celsius >= 38.0 AND duration_hours >= 1 AND recent_chemo_days <= 14",
+          "tier": "emergency",
+          "rationale_key": "fever.rule.febrile_neutropenia_sustained",
+          "citation": "COSTaRS v2020 Fever Protocol; NCCN v2.2024"
+        },
+        {
+          "id": "fever_sepsis_signs",
+          "condition": "hypotension_signs == true OR altered_consciousness == true OR chills_rigors == true",
+          "tier": "emergency",
+          "rationale_key": "fever.rule.sepsis",
+          "citation": "COSTaRS v2020 Fever Protocol; Singer M et al. JAMA 2016"
+        },
+        {
+          "id": "fever_moderate_no_chemo",
+          "condition": "temp_celsius >= 39.0 AND (recent_chemo_days > 14 OR recent_chemo_days == null)",
+          "tier": "urgent",
+          "rationale_key": "fever.rule.moderate_no_chemo",
+          "citation": "COSTaRS v2020 Fever Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "fever.care.hydration"},
+        {"key": "fever.care.acetaminophen", "warning": true, "note": "Avoid if allergic; masks fever in FN workup"},
+        {"key": "fever.care.no_aspirin_children"}
+      ]
+    },
+    "mucositis": {
+      "id": "mucositis",
+      "names": {"en": "Oral Mucositis / Mouth Sores", "fr": "Mucite orale / Aphtes", "ar": "التهاب الغشاء المخاطي الفموي"},
+      "ctcae_mapping": "CTCAE v5.0: Mucositis oral (10028116)",
+      "assessment": {
+        "questions": [
+          {"id": "pain_severity_0_10", "type": "number", "unit": "/10", "label_key": "mucositis.q.pain"},
+          {"id": "able_to_eat", "type": "boolean", "label_key": "mucositis.q.eating"},
+          {"id": "able_to_swallow", "type": "boolean", "label_key": "mucositis.q.swallowing"},
+          {"id": "ulcers_present", "type": "boolean", "label_key": "mucositis.q.ulcers"},
+          {"id": "bleeding_from_mouth", "type": "boolean", "label_key": "mucositis.q.bleeding"},
+          {"id": "fever_concurrent", "type": "boolean", "label_key": "mucositis.q.fever"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Asymptomatic or mild symptoms; intervention not indicated", "level": "mild"},
+        "grade_2": {"criteria": "Moderate pain; ulcer not interfering with oral intake; modified diet indicated", "level": "moderate"},
+        "grade_3": {"criteria": "Severe pain; interfering with oral intake", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences; urgent intervention", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "mucositis_unable_to_eat",
+          "condition": "able_to_swallow == false OR (able_to_eat == false AND fever_concurrent == true)",
+          "tier": "urgent",
+          "rationale_key": "mucositis.rule.unable_to_eat",
+          "citation": "COSTaRS v2020 Mucositis Protocol; Lalla RV et al. Cancer 2014"
+        },
+        {
+          "id": "mucositis_severe",
+          "condition": "grade >= 3",
+          "tier": "urgent",
+          "rationale_key": "mucositis.rule.severe",
+          "citation": "COSTaRS v2020 Mucositis Protocol; MASCC/ISOO Guidelines 2014"
+        },
+        {
+          "id": "mucositis_moderate",
+          "condition": "grade >= 2",
+          "tier": "routine",
+          "rationale_key": "mucositis.rule.moderate",
+          "citation": "COSTaRS v2020 Mucositis Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "mucositis.care.saltwater_rinse"},
+        {"key": "mucositis.care.soft_diet"},
+        {"key": "mucositis.care.oral_hygiene"},
+        {"key": "mucositis.care.cold_foods", "note": "Cryotherapy for 5-FU based regimens"}
+      ]
+    },
+    "nausea_vomiting": {
+      "id": "nausea_vomiting",
+      "names": {"en": "Nausea and Vomiting", "fr": "Nausées et vomissements", "ar": "الغثيان والقيء"},
+      "ctcae_mapping": "CTCAE v5.0: Nausea (10028813); Vomiting (10047700)",
+      "assessment": {
+        "questions": [
+          {"id": "nausea_severity", "type": "select", "options": ["none", "mild", "moderate", "severe"], "label_key": "nausea.q.severity"},
+          {"id": "vomiting_episodes_24h", "type": "number", "label_key": "nausea.q.episodes"},
+          {"id": "duration_hours", "type": "number", "unit": "h", "label_key": "nausea.q.duration"},
+          {"id": "blood_in_vomit", "type": "boolean", "label_key": "nausea.q.blood"},
+          {"id": "last_oral_intake_hours", "type": "number", "unit": "h", "label_key": "nausea.q.last_intake"},
+          {"id": "dehydration_signs", "type": "boolean", "label_key": "nausea.q.dehydration"},
+          {"id": "oral_medications_tolerated", "type": "boolean", "label_key": "nausea.q.meds_tolerated"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1_nausea": {"criteria": "Loss of appetite without altered eating habits", "level": "mild"},
+        "grade_2_nausea": {"criteria": "Oral intake decreased without significant weight loss", "level": "moderate"},
+        "grade_3_nausea": {"criteria": "Inadequate oral intake; tube feeding or TPN indicated", "level": "severe"},
+        "grade_1_vomiting": {"criteria": "1-2 episodes per 24h", "level": "mild"},
+        "grade_2_vomiting": {"criteria": "3-5 episodes per 24h", "level": "moderate"},
+        "grade_3_vomiting": {"criteria": "≥6 episodes per 24h; tube feeding or TPN indicated", "level": "severe"}
+      },
+      "triage_rules": [
+        {
+          "id": "vomiting_blood",
+          "condition": "blood_in_vomit == true",
+          "tier": "emergency",
+          "rationale_key": "nausea.rule.blood",
+          "citation": "COSTaRS v2020 Nausea Protocol"
+        },
+        {
+          "id": "vomiting_severe_dehydration",
+          "condition": "vomiting_episodes_24h >= 6 OR (dehydration_signs == true AND oral_medications_tolerated == false)",
+          "tier": "urgent",
+          "rationale_key": "nausea.rule.severe",
+          "citation": "COSTaRS v2020 Nausea Protocol; NCCN Antiemesis v2.2024"
+        },
+        {
+          "id": "nausea_moderate",
+          "condition": "nausea_severity in ['moderate', 'severe'] OR vomiting_episodes_24h >= 3",
+          "tier": "routine",
+          "rationale_key": "nausea.rule.moderate",
+          "citation": "COSTaRS v2020 Nausea Protocol; NCCN Antiemesis v2.2024"
+        }
+      ],
+      "self_care": [
+        {"key": "nausea.care.small_meals"},
+        {"key": "nausea.care.bland_food"},
+        {"key": "nausea.care.ginger"},
+        {"key": "nausea.care.positioning"},
+        {"key": "nausea.care.hydration"}
+      ]
+    },
+    "pain": {
+      "id": "pain",
+      "names": {"en": "Pain", "fr": "Douleur", "ar": "الألم"},
+      "ctcae_mapping": "CTCAE v5.0: Pain (10033371)",
+      "assessment": {
+        "questions": [
+          {"id": "pain_nrs", "type": "number", "unit": "/10", "label_key": "pain.q.nrs"},
+          {"id": "pain_location", "type": "text", "label_key": "pain.q.location"},
+          {"id": "onset", "type": "select", "options": ["sudden", "gradual", "existing_worsening"], "label_key": "pain.q.onset"},
+          {"id": "uncontrolled", "type": "boolean", "label_key": "pain.q.uncontrolled"},
+          {"id": "new_neurologic_symptoms", "type": "boolean", "label_key": "pain.q.neurologic"},
+          {"id": "back_pain_bilateral_weakness", "type": "boolean", "label_key": "pain.q.cord_compression"},
+          {"id": "current_analgesics", "type": "boolean", "label_key": "pain.q.analgesics"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Mild pain; NRS 1-3", "nrs_low": 1, "nrs_high": 3, "level": "mild"},
+        "grade_2": {"criteria": "Moderate pain; NRS 4-6; limiting instrumental ADL", "nrs_low": 4, "nrs_high": 6, "level": "moderate"},
+        "grade_3": {"criteria": "Severe pain; NRS 7-9; limiting self-care ADL", "nrs_low": 7, "nrs_high": 9, "level": "severe"},
+        "grade_4": {"criteria": "Disabling pain; NRS 10; unable to perform basic self-care", "nrs": 10, "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "pain_cord_compression",
+          "condition": "back_pain_bilateral_weakness == true OR new_neurologic_symptoms == true",
+          "tier": "emergency",
+          "rationale_key": "pain.rule.cord_compression",
+          "citation": "COSTaRS v2020 Pain Protocol; Loblaw DA et al. JCO 2005"
+        },
+        {
+          "id": "pain_grade4_disabling",
+          "condition": "pain_nrs >= 10",
+          "tier": "emergency",
+          "rationale_key": "pain.rule.disabling",
+          "citation": "COSTaRS v2020 Pain Protocol; NCCN Adult Cancer Pain v2.2024"
+        },
+        {
+          "id": "pain_severe_uncontrolled",
+          "condition": "pain_nrs >= 7 AND uncontrolled == true",
+          "tier": "urgent",
+          "rationale_key": "pain.rule.severe_uncontrolled",
+          "citation": "COSTaRS v2020 Pain Protocol; NCCN Adult Cancer Pain v2.2024"
+        },
+        {
+          "id": "pain_moderate",
+          "condition": "pain_nrs >= 4",
+          "tier": "routine",
+          "rationale_key": "pain.rule.moderate",
+          "citation": "COSTaRS v2020 Pain Protocol; WHO Pain Ladder"
+        }
+      ],
+      "self_care": [
+        {"key": "pain.care.analgesic_schedule"},
+        {"key": "pain.care.non_pharmacologic"},
+        {"key": "pain.care.breakthrough_plan"}
+      ]
+    },
+    "peripheral_neuropathy": {
+      "id": "peripheral_neuropathy",
+      "names": {"en": "Peripheral Neuropathy", "fr": "Neuropathie périphérique", "ar": "الاعتلال العصبي المحيطي"},
+      "ctcae_mapping": "CTCAE v5.0: Peripheral sensory neuropathy (10034620)",
+      "assessment": {
+        "questions": [
+          {"id": "numbness_tingling", "type": "boolean", "label_key": "neuropathy.q.numbness"},
+          {"id": "locations", "type": "multiselect", "options": ["hands", "feet", "legs", "arms", "face"], "label_key": "neuropathy.q.location"},
+          {"id": "weakness", "type": "boolean", "label_key": "neuropathy.q.weakness"},
+          {"id": "balance_problems", "type": "boolean", "label_key": "neuropathy.q.balance"},
+          {"id": "adl_impact", "type": "select", "options": ["none", "instrumental", "self_care"], "label_key": "neuropathy.q.adl"},
+          {"id": "new_sudden_onset", "type": "boolean", "label_key": "neuropathy.q.sudden"},
+          {"id": "fall_risk", "type": "boolean", "label_key": "neuropathy.q.fall"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Asymptomatic; loss of deep tendon reflexes or paresthesia", "level": "mild"},
+        "grade_2": {"criteria": "Moderate symptoms; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Severe symptoms; limiting self-care ADL", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening consequences; urgent intervention", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "neuropathy_new_focal",
+          "condition": "new_sudden_onset == true AND weakness == true",
+          "tier": "emergency",
+          "rationale_key": "neuropathy.rule.new_focal",
+          "citation": "COSTaRS v2020 Peripheral Neuropathy Protocol"
+        },
+        {
+          "id": "neuropathy_severe",
+          "condition": "grade >= 3 OR fall_risk == true",
+          "tier": "routine",
+          "rationale_key": "neuropathy.rule.severe",
+          "citation": "COSTaRS v2020 Peripheral Neuropathy Protocol; Loprinzi CL et al. NEJM 2018"
+        },
+        {
+          "id": "neuropathy_moderate",
+          "condition": "grade >= 2",
+          "tier": "routine",
+          "rationale_key": "neuropathy.rule.moderate",
+          "citation": "COSTaRS v2020 Peripheral Neuropathy Protocol; NCCN Survivorship v2.2024 CIPN"
+        }
+      ],
+      "self_care": [
+        {"key": "neuropathy.care.fall_prevention"},
+        {"key": "neuropathy.care.footwear"},
+        {"key": "neuropathy.care.temperature_care"},
+        {"key": "neuropathy.care.duloxetine_mention", "note": "Discuss with oncologist"}
+      ]
+    },
+    "skin_reactions": {
+      "id": "skin_reactions",
+      "names": {"en": "Skin Reactions", "fr": "Réactions cutanées", "ar": "تفاعلات جلدية"},
+      "ctcae_mapping": "CTCAE v5.0: Dermatitis radiation (10012434); Palmar-plantar erythrodysesthesia (10033660)",
+      "assessment": {
+        "questions": [
+          {"id": "reaction_type", "type": "multiselect", "options": ["redness", "dry_skin", "peeling", "blistering", "open_sores", "hand_foot_redness", "rash"], "label_key": "skin.q.type"},
+          {"id": "area_affected_pct", "type": "select", "options": ["<10", "10-30", ">30"], "label_key": "skin.q.area"},
+          {"id": "pain_itching", "type": "boolean", "label_key": "skin.q.pain"},
+          {"id": "infection_signs", "type": "boolean", "label_key": "skin.q.infection"},
+          {"id": "fever_concurrent", "type": "boolean", "label_key": "skin.q.fever"},
+          {"id": "radiation_site", "type": "boolean", "label_key": "skin.q.radiation"},
+          {"id": "capecitabine_or_sorafenib", "type": "boolean", "label_key": "skin.q.hfs_drugs"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Asymptomatic rash; <10% BSA affected", "level": "mild"},
+        "grade_2": {"criteria": "Symptomatic rash; 10-30% BSA; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Severe rash; >30% BSA; limiting self-care ADL; steroids indicated", "level": "severe"},
+        "grade_4": {"criteria": "Life-threatening; ≥30% BSA with secondary infection", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "skin_infection",
+          "condition": "infection_signs == true AND fever_concurrent == true",
+          "tier": "emergency",
+          "rationale_key": "skin.rule.infection",
+          "citation": "COSTaRS v2020 Skin Reactions Protocol"
+        },
+        {
+          "id": "skin_severe",
+          "condition": "grade >= 3",
+          "tier": "urgent",
+          "rationale_key": "skin.rule.severe",
+          "citation": "COSTaRS v2020 Skin Reactions Protocol"
+        },
+        {
+          "id": "skin_hfs",
+          "condition": "capecitabine_or_sorafenib == true AND grade >= 2",
+          "tier": "routine",
+          "rationale_key": "skin.rule.hfs",
+          "citation": "COSTaRS v2020 Skin Reactions Protocol; NCCN Survivorship v2.2024"
+        }
+      ],
+      "self_care": [
+        {"key": "skin.care.moisturizer"},
+        {"key": "skin.care.sun_protection"},
+        {"key": "skin.care.gentle_soap"},
+        {"key": "skin.care.urea_cream_hfs"}
+      ]
+    },
+    "sleep_wake_disturbance": {
+      "id": "sleep_wake_disturbance",
+      "names": {"en": "Sleep-Wake Disturbance", "fr": "Troubles du sommeil", "ar": "اضطراب النوم"},
+      "ctcae_mapping": "CTCAE v5.0: Insomnia (10022437); Somnolence (10041349)",
+      "assessment": {
+        "questions": [
+          {"id": "type", "type": "select", "options": ["difficulty_falling_asleep", "staying_asleep", "early_waking", "too_much_sleep", "mixed"], "label_key": "sleep.q.type"},
+          {"id": "severity_nights_per_week", "type": "number", "label_key": "sleep.q.frequency"},
+          {"id": "duration_weeks", "type": "number", "unit": "weeks", "label_key": "sleep.q.duration"},
+          {"id": "daytime_function_impact", "type": "boolean", "label_key": "sleep.q.function"},
+          {"id": "pain_cause", "type": "boolean", "label_key": "sleep.q.pain_cause"},
+          {"id": "anxiety_cause", "type": "boolean", "label_key": "sleep.q.anxiety_cause"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Mild difficulty (<3 nights/week); no significant daytime impact", "level": "mild"},
+        "grade_2": {"criteria": "Moderate difficulty (3-5 nights/week); limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Severe difficulty (≥6 nights/week); limiting self-care ADL", "level": "severe"}
+      },
+      "triage_rules": [
+        {
+          "id": "sleep_severe",
+          "condition": "grade >= 3 AND duration_weeks >= 4",
+          "tier": "routine",
+          "rationale_key": "sleep.rule.severe",
+          "citation": "COSTaRS v2020 Sleep-Wake Disturbance Protocol; NCCN Survivorship v2.2024"
+        },
+        {
+          "id": "sleep_moderate",
+          "condition": "grade >= 2 AND duration_weeks >= 2",
+          "tier": "routine",
+          "rationale_key": "sleep.rule.moderate",
+          "citation": "COSTaRS v2020 Sleep-Wake Disturbance Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "sleep.care.sleep_hygiene"},
+        {"key": "sleep.care.CBT_I_mention"},
+        {"key": "sleep.care.limit_caffeine"},
+        {"key": "sleep.care.relaxation"}
+      ]
+    },
+    "xerostomia": {
+      "id": "xerostomia",
+      "names": {"en": "Mouth Dryness (Xerostomia)", "fr": "Sécheresse buccale (xérostomie)", "ar": "جفاف الفم"},
+      "ctcae_mapping": "CTCAE v5.0: Dry mouth (10013781)",
+      "new_in_v2020": true,
+      "assessment": {
+        "questions": [
+          {"id": "severity", "type": "select", "options": ["mild", "moderate", "severe"], "label_key": "xerostomia.q.severity"},
+          {"id": "duration_weeks", "type": "number", "unit": "weeks", "label_key": "xerostomia.q.duration"},
+          {"id": "eating_difficulty", "type": "boolean", "label_key": "xerostomia.q.eating"},
+          {"id": "speaking_difficulty", "type": "boolean", "label_key": "xerostomia.q.speaking"},
+          {"id": "radiation_to_head_neck", "type": "boolean", "label_key": "xerostomia.q.radiation"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Symptomatic; no significant dietary alteration; saliva stimulants sufficient", "level": "mild"},
+        "grade_2": {"criteria": "Moderate symptoms; oral supplements indicated; limiting eating", "level": "moderate"},
+        "grade_3": {"criteria": "Unable to adequately eat orally; tube feeding indicated", "level": "severe"}
+      },
+      "triage_rules": [
+        {
+          "id": "xerostomia_severe",
+          "condition": "grade >= 3",
+          "tier": "urgent",
+          "rationale_key": "xerostomia.rule.severe",
+          "citation": "COSTaRS v2020 Xerostomia Protocol"
+        },
+        {
+          "id": "xerostomia_moderate",
+          "condition": "grade >= 2",
+          "tier": "routine",
+          "rationale_key": "xerostomia.rule.moderate",
+          "citation": "COSTaRS v2020 Xerostomia Protocol"
+        }
+      ],
+      "self_care": [
+        {"key": "xerostomia.care.sips_water"},
+        {"key": "xerostomia.care.sugarfree_gum"},
+        {"key": "xerostomia.care.saliva_substitute"},
+        {"key": "xerostomia.care.oral_hygiene"}
+      ]
+    },
+    "skin_rash": {
+      "id": "skin_rash",
+      "names": {"en": "Skin Rash", "fr": "Éruption cutanée", "ar": "طفح جلدي"},
+      "ctcae_mapping": "CTCAE v5.0: Rash maculo-papular (10037868); EGFR inhibitor dermatologic toxicity",
+      "new_in_v2020": true,
+      "assessment": {
+        "questions": [
+          {"id": "rash_type", "type": "multiselect", "options": ["papules", "pustules", "maculopapular", "urticaria", "target_lesions", "bullae"], "label_key": "rash.q.type"},
+          {"id": "area_pct_bsa", "type": "select", "options": ["<10", "10-30", ">30"], "label_key": "rash.q.area"},
+          {"id": "mucous_membrane_involvement", "type": "boolean", "label_key": "rash.q.mucosa"},
+          {"id": "eye_involvement", "type": "boolean", "label_key": "rash.q.eyes"},
+          {"id": "fever_concurrent", "type": "boolean", "label_key": "rash.q.fever"},
+          {"id": "recent_new_drug", "type": "boolean", "label_key": "rash.q.new_drug"},
+          {"id": "egfr_inhibitor", "type": "boolean", "label_key": "rash.q.egfr"},
+          {"id": "immunotherapy", "type": "boolean", "label_key": "rash.q.immunotherapy"}
+        ]
+      },
+      "severity_grading": {
+        "grade_1": {"criteria": "Macules/papules covering <10% BSA; asymptomatic or mildly symptomatic", "level": "mild"},
+        "grade_2": {"criteria": "Macules/papules covering 10-30% BSA; limiting instrumental ADL", "level": "moderate"},
+        "grade_3": {"criteria": "Macules/papules covering >30% BSA; limiting self-care ADL", "level": "severe"},
+        "grade_4": {"criteria": "Papules/plaques covering any% BSA with secondary infection and sepsis", "level": "life_threatening"}
+      },
+      "triage_rules": [
+        {
+          "id": "rash_sten_toxic_epidermal",
+          "condition": "mucous_membrane_involvement == true AND eye_involvement == true",
+          "tier": "emergency",
+          "rationale_key": "rash.rule.severe_drug",
+          "citation": "COSTaRS v2020 Skin Rash Protocol — Stevens-Johnson / TEN criteria"
+        },
+        {
+          "id": "rash_irae_dermatitis",
+          "condition": "immunotherapy == true AND grade >= 3",
+          "tier": "emergency",
+          "rationale_key": "rash.rule.irae",
+          "citation": "COSTaRS v2020 Skin Rash Protocol; Schneider BJ et al. JCO 2021; NCCN irAE v1.2024"
+        },
+        {
+          "id": "rash_severe",
+          "condition": "grade >= 3 AND fever_concurrent == true",
+          "tier": "urgent",
+          "rationale_key": "rash.rule.severe",
+          "citation": "COSTaRS v2020 Skin Rash Protocol"
+        },
+        {
+          "id": "rash_egfr_grade2",
+          "condition": "egfr_inhibitor == true AND grade >= 2",
+          "tier": "routine",
+          "rationale_key": "rash.rule.egfr",
+          "citation": "COSTaRS v2020 Skin Rash Protocol; NCCN irAE v1.2024"
+        }
+      ],
+      "self_care": [
+        {"key": "rash.care.gentle_cleanser"},
+        {"key": "rash.care.fragrance_free_moisturizer"},
+        {"key": "rash.care.sun_protection"},
+        {"key": "rash.care.avoid_hot_water"}
+      ]
+    }
+  }
+}

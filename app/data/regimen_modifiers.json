@@ -1,0 +1,179 @@
+{
+  "version": "1.0",
+  "description": "Triage threshold modifiers based on treatment regimen — applied on top of COSTaRS base rules",
+  "source": "NCCN Guidelines; ESMO Clinical Practice Guidelines; ASCO Clinical Practice Guidelines",
+  "modalities": {
+    "cytotoxic_chemo": {
+      "id": "cytotoxic_chemo",
+      "label": {"en": "Cytotoxic Chemotherapy", "fr": "Chimiothérapie cytotoxique", "ar": "العلاج الكيميائي السامة للخلايا"},
+      "febrile_neutropenia_window_days": 14,
+      "modifiers": [
+        {
+          "symptom": "fever",
+          "rule": "febrile_neutropenia_single",
+          "active": true,
+          "note": "FN protocol activated — 14-day cytotoxic window applies"
+        },
+        {
+          "symptom": "bleeding",
+          "modifier": "lower_threshold",
+          "rationale": "Chemotherapy-induced thrombocytopenia increases bleeding risk",
+          "citation": "NCCN Hematopoietic Growth Factors v2.2024"
+        }
+      ]
+    },
+    "immunotherapy": {
+      "id": "immunotherapy",
+      "label": {"en": "Immunotherapy (Checkpoint Inhibitor)", "fr": "Immunothérapie (inhibiteur de checkpoint)", "ar": "العلاج المناعي"},
+      "activate_irae_module": true,
+      "febrile_neutropenia_window_days": null,
+      "note": "irAE module activated — lower thresholds for immune-mediated symptoms",
+      "modifiers": [
+        {
+          "symptom": "diarrhea",
+          "escalate_from": "routine",
+          "escalate_to": "urgent",
+          "at_grade": 2,
+          "rationale": "Diarrhea Grade ≥2 with immunotherapy = suspect immune-mediated colitis",
+          "citation": "NCCN Management of Immunotherapy-Related Toxicities v1.2024; Schneider BJ et al. JCO 2021"
+        },
+        {
+          "symptom": "dyspnea",
+          "escalate_from": "self_care",
+          "escalate_to": "urgent",
+          "at_grade": 1,
+          "rationale": "Any new dyspnea with immunotherapy = suspect pneumonitis until proven otherwise",
+          "citation": "NCCN irAE v1.2024; Postow MA et al. NEJM 2018"
+        },
+        {
+          "symptom": "fatigue",
+          "add_workup": ["TSH", "morning_cortisol", "ACTH"],
+          "rationale": "Fatigue with immunotherapy — screen for thyroiditis and hypophysitis",
+          "citation": "NCCN irAE v1.2024"
+        },
+        {
+          "symptom": "skin_rash",
+          "escalate_at_grade": 2,
+          "escalate_to": "urgent",
+          "rationale": "Grade ≥2 rash with immunotherapy — immune-mediated dermatitis; steroids may be needed",
+          "citation": "Schneider BJ et al. JCO 2021"
+        }
+      ]
+    },
+    "targeted_therapy": {
+      "id": "targeted_therapy",
+      "label": {"en": "Targeted Therapy (TKI/mAb/PARP/CDK4-6)", "fr": "Thérapie ciblée", "ar": "العلاج الموجه"},
+      "activate_irae_module": false,
+      "drug_specific_rules": [
+        {
+          "drugs": ["capecitabine", "5-fu_oral", "xeloda"],
+          "symptom": "skin_reactions",
+          "condition": "hand_foot_syndrome",
+          "grade_2_threshold": "pain_or_functional_impairment",
+          "tier": "routine",
+          "citation": "NCCN Survivorship; Capecitabine prescribing information"
+        },
+        {
+          "drugs": ["sorafenib", "sunitinib", "regorafenib"],
+          "symptom": "skin_reactions",
+          "condition": "hand_foot_skin_reaction",
+          "grade_2_threshold": "blistering_or_ulceration",
+          "tier": "routine",
+          "dose_hold_trigger": "grade_3",
+          "citation": "NCCN Kidney Cancer; Sorafenib prescribing information"
+        },
+        {
+          "drugs": ["erlotinib", "gefitinib", "osimertinib", "afatinib", "cetuximab", "panitumumab"],
+          "symptom": "skin_rash",
+          "note": "Grade 1 EGFR-TKI rash is expected (80% of patients) — not clinically urgent without infection signs",
+          "grade_1_tier": "self_care",
+          "grade_2_tier": "routine",
+          "grade_3_tier": "urgent",
+          "citation": "NCCN NSCLC; Lacouture ME et al. JCO 2010"
+        },
+        {
+          "drugs": ["palbociclib", "ribociclib", "abemaciclib"],
+          "symptom": "diarrhea",
+          "note": "CDK4/6 inhibitor-associated diarrhea — higher baseline rate; Grade 2 warrants loperamide adjustment",
+          "grade_2_tier": "routine",
+          "citation": "NCCN Breast Cancer; FDA prescribing information CDK4/6"
+        }
+      ]
+    },
+    "radiation": {
+      "id": "radiation",
+      "label": {"en": "Radiation Therapy", "fr": "Radiothérapie", "ar": "العلاج الإشعاعي"},
+      "activate_irae_module": false,
+      "modifiers": [
+        {
+          "symptom": "mucositis",
+          "lower_threshold": true,
+          "note": "Head/neck radiation — mucositis Grade 2+ warrants earlier intervention",
+          "citation": "NCCN Head and Neck Cancers; MASCC/ISOO Guidelines 2014"
+        },
+        {
+          "symptom": "skin_reactions",
+          "lower_threshold": true,
+          "note": "Radiation dermatitis — any open sore in radiation field warrants same-day evaluation",
+          "citation": "COSTaRS v2020 Skin Reactions Protocol"
+        },
+        {
+          "symptom": "dyspnea",
+          "note": "Radiation pneumonitis — typically 4-12 weeks post chest RT; any new dyspnea in this window = routine minimum",
+          "citation": "NCCN NSCLC; Marks LB et al. Int J Radiat Oncol 2010"
+        }
+      ]
+    },
+    "hormonal_endocrine": {
+      "id": "hormonal_endocrine",
+      "label": {"en": "Hormonal/Endocrine Therapy", "fr": "Hormonothérapie", "ar": "العلاج الهرموني"},
+      "activate_irae_module": false,
+      "modifiers": [
+        {
+          "symptom": "pain",
+          "note": "Joint pain (arthralgia) is common with AI/fulvestrant — Grade 2 warrants review but not urgent",
+          "citation": "NCCN Breast Cancer; ASCO AI management guidelines"
+        }
+      ]
+    },
+    "car_t": {
+      "id": "car_t",
+      "label": {"en": "CAR-T Cell Therapy", "fr": "Thérapie cellulaire CAR-T", "ar": "علاج خلايا CAR-T"},
+      "activate_irae_module": false,
+      "febrile_neutropenia_window_days": 30,
+      "high_risk_period_days": 30,
+      "modifiers": [
+        {
+          "symptom": "fever",
+          "note": "Any fever within 30 days post CAR-T = possible CRS — EMERGENCY. CRS can be fatal without tocilizumab.",
+          "rule_override": "emergency",
+          "citation": "NCCN B-Cell Lymphomas; Lee DW et al. Biol Blood Marrow Transplant 2019"
+        },
+        {
+          "symptom": "neurologic",
+          "note": "New neurologic symptoms within 30 days post CAR-T = possible ICANS — EMERGENCY.",
+          "rule_override": "emergency",
+          "citation": "NCCN B-Cell Lymphomas; ASTCT Consensus Grading 2019"
+        }
+      ]
+    },
+    "stem_cell_transplant": {
+      "id": "stem_cell_transplant",
+      "label": {"en": "Stem Cell Transplant (SCT)", "fr": "Greffe de cellules souches", "ar": "زرع الخلايا الجذعية"},
+      "febrile_neutropenia_window_days": 30,
+      "modifiers": [
+        {
+          "symptom": "fever",
+          "note": "Any fever within 30 days post SCT = FN protocol. Extended window vs standard chemo.",
+          "citation": "NCCN Hematopoietic Cell Transplantation"
+        },
+        {
+          "symptom": "diarrhea",
+          "note": "Diarrhea post allo-SCT = consider GvHD — urgent evaluation regardless of grade",
+          "rule_override": "urgent",
+          "citation": "NCCN Hematopoietic Cell Transplantation; Zeiser R, Blazar BR. NEJM 2017"
+        }
+      ]
+    }
+  }
+}

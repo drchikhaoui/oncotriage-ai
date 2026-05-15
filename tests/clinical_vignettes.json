@@ -1,0 +1,645 @@
+[
+  {
+    "id": "V-001",
+    "name": "Classic Febrile Neutropenia",
+    "category": "emergency",
+    "description": "Patient with AML 6 days post-chemotherapy presenting with temperature 38.7°C",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fever",
+          "temperature_celsius": 38.7,
+          "duration_hours": 2,
+          "severity_descriptor": "moderate",
+          "descriptors": ["chills", "rigors"]
+        }
+      ],
+      "last_chemo_date_offset_days": 6,
+      "thrombocytopenia_history": false,
+      "cancer_type": "AML",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["FN-001"],
+    "rationale": "Temp ≥38.3°C + chemo within 14 days = febrile neutropenia. #1 oncologic emergency."
+  },
+  {
+    "id": "V-002",
+    "name": "Sustained Fever — Alternate FN Criterion",
+    "category": "emergency",
+    "description": "Breast cancer patient 10 days post-chemo, temp 38.1°C sustained for 90 minutes",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fever",
+          "temperature_celsius": 38.1,
+          "duration_hours": 1.5,
+          "severity_descriptor": "mild",
+          "descriptors": []
+        }
+      ],
+      "last_chemo_date_offset_days": 10,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Breast",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["FN-002"],
+    "rationale": "Temp ≥38.0°C sustained ≥1hr + chemo within 14 days = alternate FN criterion per NCCN."
+  },
+  {
+    "id": "V-003",
+    "name": "Dyspnea at Rest",
+    "category": "emergency",
+    "description": "Lung cancer patient with sudden onset shortness of breath at rest",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "dyspnea",
+          "at_rest": true,
+          "onset": "sudden",
+          "severity_descriptor": "severe",
+          "descriptors": ["sudden onset", "pleuritic chest pain"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Lung",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["RESP-001"],
+    "rationale": "Dyspnea at rest = CTCAE Grade 3 = emergency. PE, effusion, tamponade must be ruled out."
+  },
+  {
+    "id": "V-004",
+    "name": "Grade 4 Bleeding",
+    "category": "emergency",
+    "description": "Multiple myeloma patient with life-threatening hemorrhage",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "bleeding",
+          "ctcae_grade": 4,
+          "severity_descriptor": "life-threatening",
+          "descriptors": ["heavy bleeding", "blood in stool"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": true,
+      "cancer_type": "Multiple Myeloma",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["BLEED-002"],
+    "rationale": "Grade 3+ bleeding = EMERGENCY per NCCN. Thrombocytopenia further escalates."
+  },
+  {
+    "id": "V-005",
+    "name": "Neurologic Red Flag — Cord Compression",
+    "category": "emergency",
+    "description": "Prostate cancer patient with sudden bilateral leg weakness and back pain",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "neurologic",
+          "onset": "sudden",
+          "severity_descriptor": "severe",
+          "descriptors": ["bilateral leg weakness", "back pain", "saddle anesthesia"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Prostate",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["NEURO-001"],
+    "rationale": "Bilateral leg weakness + back pain + saddle anesthesia = cord compression until proven otherwise."
+  },
+  {
+    "id": "V-006",
+    "name": "Grade 4 Pain — Disabling",
+    "category": "emergency",
+    "description": "Pancreatic cancer patient with NRS 10/10 abdominal pain, unable to perform any activity",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "pain",
+          "pain_nrs": 10,
+          "severity_descriptor": "severe",
+          "uncontrolled": true,
+          "descriptors": ["abdominal", "constant", "unresponsive to morphine"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Pancreatic",
+      "treatment_status": "palliative"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["PAIN-002"],
+    "rationale": "NRS 10/10 = CTCAE Grade 4 pain. Rule out new surgical emergency (obstruction, perforation)."
+  },
+  {
+    "id": "V-007",
+    "name": "Severe Vomiting — Dehydration Risk",
+    "category": "urgent",
+    "description": "Colorectal cancer patient receiving FOLFOX with 8 vomiting episodes in 24 hours",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "vomiting",
+          "episodes_per_24h": 8,
+          "severity_descriptor": "severe",
+          "descriptors": ["unable to keep anything down"]
+        }
+      ],
+      "last_chemo_date_offset_days": 3,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Colorectal",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["GI-001"],
+    "rationale": "≥6 vomiting episodes/24h = CTCAE Grade 3. IV hydration required same day per NCCN Antiemesis."
+  },
+  {
+    "id": "V-008",
+    "name": "Severe Diarrhea — Dehydration Risk",
+    "category": "urgent",
+    "description": "Colon cancer patient on capecitabine with 10 watery stools above baseline",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "diarrhea",
+          "stools_above_baseline": 10,
+          "severity_descriptor": "severe",
+          "descriptors": ["watery", "cramping"]
+        }
+      ],
+      "last_chemo_date_offset_days": 14,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Colon",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["GI-002"],
+    "rationale": "≥7 stools/day above baseline = CTCAE Grade 3 diarrhea. IV hydration + C. diff screen per NCCN."
+  },
+  {
+    "id": "V-009",
+    "name": "Uncontrolled Severe Pain",
+    "category": "urgent",
+    "description": "Bone metastasis patient, NRS 8/10, oxycodone not helping",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "pain",
+          "pain_nrs": 8,
+          "severity_descriptor": "severe",
+          "uncontrolled": true,
+          "descriptors": ["bone pain", "hip", "not responding to opioids"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Breast (bone mets)",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["PAIN-001"],
+    "rationale": "Grade 3 uncontrolled pain = URGENT per NCCN Adult Cancer Pain. Opioid rotation indicated."
+  },
+  {
+    "id": "V-010",
+    "name": "Any Bleeding with Thrombocytopenia",
+    "category": "urgent",
+    "description": "Leukemia patient with known thrombocytopenia reporting petechiae and mild bruising",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "bleeding",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "descriptors": ["petechiae", "bruising on arms"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": true,
+      "cancer_type": "AML",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["BLEED-001"],
+    "rationale": "Any bleeding + thrombocytopenia history = URGENT minimum per NCCN."
+  },
+  {
+    "id": "V-011",
+    "name": "Grade 3 Mucositis",
+    "category": "urgent",
+    "description": "Head and neck cancer patient on chemoradiation, unable to swallow due to severe mouth sores",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "mucositis",
+          "ctcae_grade": 3,
+          "severity_descriptor": "severe",
+          "descriptors": ["unable to swallow", "severe pain", "oral ulcers"]
+        }
+      ],
+      "last_chemo_date_offset_days": 5,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Head and Neck",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["MUC-001"],
+    "rationale": "Grade 3 mucositis interfering with oral intake — nutritional support and pain management required."
+  },
+  {
+    "id": "V-012",
+    "name": "Moderate Fatigue — Routine",
+    "category": "routine",
+    "description": "Breast cancer survivor 3 months post-treatment with persistent fatigue limiting work",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fatigue",
+          "ctcae_grade": 2,
+          "severity_descriptor": "moderate",
+          "descriptors": ["not relieved by rest", "affecting work"]
+        }
+      ],
+      "last_chemo_date_offset_days": 90,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Breast",
+      "treatment_status": "surveillance"
+    },
+    "expected_triage_level": "ROUTINE",
+    "expected_rules": ["FAT-001b"],
+    "rationale": "Grade 2 CRF — routine workup per NCCN (CBC, TSH, PHQ-9). Exercise intervention."
+  },
+  {
+    "id": "V-013",
+    "name": "Moderate Peripheral Neuropathy — Routine",
+    "category": "routine",
+    "description": "Ovarian cancer patient on paclitaxel with numbness and tingling in hands and feet limiting driving",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "peripheral_neuropathy",
+          "ctcae_grade": 2,
+          "severity_descriptor": "moderate",
+          "descriptors": ["numbness", "tingling", "hands and feet", "cannot drive"]
+        }
+      ],
+      "last_chemo_date_offset_days": 7,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Ovarian",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "ROUTINE",
+    "expected_rules": ["NEURO-002b"],
+    "rationale": "Grade 2 CIPN limiting ADLs — dose modification of paclitaxel + duloxetine per NCCN CIPN."
+  },
+  {
+    "id": "V-014",
+    "name": "Grade 1 Nausea — Self-Care",
+    "category": "self_care",
+    "description": "Lymphoma patient 1 week post-chemo with mild nausea, eating normally",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "nausea",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "descriptors": ["mild nausea", "eating ok"]
+        }
+      ],
+      "last_chemo_date_offset_days": 7,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Lymphoma",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["GI-001c"],
+    "rationale": "Grade 1 nausea — home management with diet modification and PRN antiemetics."
+  },
+  {
+    "id": "V-015",
+    "name": "Multiple Concurrent Symptoms — Highest Level Wins",
+    "category": "edge_case",
+    "description": "NHL patient 8 days post-chemo with low-grade fever, mild fatigue, and Grade 1 nausea",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fever",
+          "temperature_celsius": 38.5,
+          "duration_hours": 0.5,
+          "severity_descriptor": "mild",
+          "descriptors": []
+        },
+        {
+          "name": "fatigue",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "descriptors": []
+        },
+        {
+          "name": "nausea",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "descriptors": []
+        }
+      ],
+      "last_chemo_date_offset_days": 8,
+      "thrombocytopenia_history": false,
+      "cancer_type": "NHL",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["FN-001"],
+    "rationale": "Even with concurrent mild symptoms, fever 38.5°C + chemo 8 days ago = febrile neutropenia = EMERGENCY. Highest level always wins."
+  },
+  {
+    "id": "V-016",
+    "name": "irAE Colitis — Pembrolizumab-Induced",
+    "category": "irae",
+    "description": "NSCLC patient on pembrolizumab monotherapy with 5 loose stools above baseline per day for 3 days",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "diarrhea",
+          "stools_above_baseline": 5,
+          "duration_hours": 72,
+          "severity_descriptor": "moderate",
+          "descriptors": ["watery stools", "cramping", "no blood"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "NSCLC",
+      "treatment_modalities": ["immunotherapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["colitis_g2_plus", "GI-002-imt"],
+    "rationale": "Grade 2 diarrhea (4–6 stools/day above baseline) in an immunotherapy patient must be evaluated urgently for immune-related colitis. Colonoscopy + IV steroids may be required. NCCN Immunotherapy Toxicities v1.2024."
+  },
+  {
+    "id": "V-017",
+    "name": "irAE Pneumonitis — Nivolumab-Induced",
+    "category": "irae",
+    "description": "Melanoma patient on nivolumab, new onset shortness of breath and dry cough for 1 week",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "dyspnea",
+          "severity_descriptor": "mild",
+          "at_rest": false,
+          "duration_hours": 168,
+          "descriptors": ["dry cough", "exertional", "new onset"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Melanoma",
+      "treatment_modalities": ["immunotherapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["pneumonitis_any_grade_immunotherapy"],
+    "rationale": "Any new dyspnea in an immunotherapy patient must be evaluated as immune-related pneumonitis. Even Grade 1 requires urgent CT chest and pulmonology consultation. Can progress rapidly to fatal respiratory failure."
+  },
+  {
+    "id": "V-018",
+    "name": "irAE Dermatitis Grade 3 — SJS/TEN Must Be Excluded",
+    "category": "irae",
+    "description": "Renal cell carcinoma patient on ipilimumab + nivolumab with Grade 3 rash covering >30% BSA with blistering",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "skin_rash",
+          "ctcae_grade": 3,
+          "severity_descriptor": "severe",
+          "duration_hours": 48,
+          "descriptors": ["blistering", "mucous membrane involvement", "greater than 30 percent BSA"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Renal Cell Carcinoma",
+      "treatment_modalities": ["immunotherapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["irae_dermatitis_g3_plus"],
+    "rationale": "Grade 3+ skin reaction in an immunotherapy patient = EMERGENCY. Stevens-Johnson Syndrome and Toxic Epidermal Necrolysis must be excluded. Immediate dermatology + oncology involvement. Immunotherapy must be permanently discontinued."
+  },
+  {
+    "id": "V-019",
+    "name": "irAE Myocarditis — Checkpoint Inhibitor Cardiotoxicity",
+    "category": "irae",
+    "description": "Lymphoma patient on combination checkpoint inhibitor therapy, new chest pain with palpitations and mild dyspnea",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "pain",
+          "severity_descriptor": "moderate",
+          "duration_hours": 12,
+          "descriptors": ["chest pain", "palpitations", "racing heart", "retrosternal pressure"]
+        },
+        {
+          "name": "dyspnea",
+          "severity_descriptor": "mild",
+          "at_rest": false,
+          "descriptors": []
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Lymphoma",
+      "treatment_modalities": ["immunotherapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["myocarditis_any_grade"],
+    "rationale": "Checkpoint inhibitor–associated myocarditis has ~50% case fatality. Any chest pain with palpitations in an immunotherapy patient = EMERGENCY. Troponin, ECG, and cardiology stat consult. Immunotherapy must be held immediately."
+  },
+  {
+    "id": "V-020",
+    "name": "CAR-T Cytokine Release Syndrome — Day 15",
+    "category": "emergency",
+    "description": "Diffuse large B-cell lymphoma patient day 15 post-axicabtagene ciloleucel infusion with fever 38.4°C and rigors",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fever",
+          "temperature_celsius": 38.4,
+          "duration_hours": 3,
+          "severity_descriptor": "moderate",
+          "descriptors": ["rigors", "chills", "malaise"]
+        }
+      ],
+      "last_chemo_date_offset_days": 15,
+      "thrombocytopenia_history": false,
+      "cancer_type": "DLBCL",
+      "treatment_modalities": ["car_t"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["FN-CAR-T"],
+    "rationale": "Any fever within 30 days of CAR-T infusion must be treated as cytokine release syndrome (CRS) until proven otherwise. CRS can progress to life-threatening hemodynamic instability requiring ICU and tocilizumab. NCCN Hematopoietic Cell Transplantation v1.2024."
+  },
+  {
+    "id": "V-021",
+    "name": "Severe Anxiety — Grade 3",
+    "category": "urgent",
+    "description": "Lung cancer patient with debilitating anxiety, unable to function, panic attacks daily",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "anxiety",
+          "ctcae_grade": 3,
+          "severity_descriptor": "severe",
+          "descriptors": ["panic attacks", "unable to function", "hyperventilation"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Lung",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["PSY-001"],
+    "rationale": "Grade 3 anxiety (limiting self-care ADLs) requires urgent psychiatric evaluation. Suicide risk assessment required. COSTaRS Emotional Distress Protocol v2020."
+  },
+  {
+    "id": "V-022",
+    "name": "Severe Anorexia — Grade 3",
+    "category": "urgent",
+    "description": "Pancreatic cancer patient with complete appetite loss, >10% weight loss over 1 month, unable to maintain oral intake",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "anorexia",
+          "ctcae_grade": 3,
+          "severity_descriptor": "severe",
+          "descriptors": ["no appetite", "10 percent weight loss", "unable to eat"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Pancreatic",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["ANOR-001"],
+    "rationale": "Grade 3 anorexia with significant weight loss — inadequate oral caloric intake. Enteral or parenteral nutrition consideration. Urgent dietitian + gastroenterology referral per COSTaRS v2020."
+  },
+  {
+    "id": "V-023",
+    "name": "Grade 1 Xerostomia — Self-Care",
+    "category": "self_care",
+    "description": "Head and neck cancer patient post-radiation with mild dry mouth, able to eat soft foods with liquids",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "xerostomia",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "descriptors": ["dry mouth", "needs liquids with meals", "minimal impact on eating"]
+        }
+      ],
+      "last_chemo_date_offset_days": 30,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Head and Neck",
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["DEFAULT-001"],
+    "rationale": "Grade 1 xerostomia — symptomatic but not limiting eating significantly. Artificial saliva, good oral hygiene, and ice chips per COSTaRS v2020 Dry Mouth Protocol."
+  },
+  {
+    "id": "V-024",
+    "name": "irAE Colitis Grade 4 — Life-Threatening",
+    "category": "irae",
+    "description": "Urothelial carcinoma patient on atezolizumab with >10 watery stools per day, rectal bleeding, and abdominal distension",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "diarrhea",
+          "ctcae_grade": 4,
+          "severity_descriptor": "severe",
+          "duration_hours": 24,
+          "descriptors": ["rectal bleeding", "abdominal distension", "more than 10 stools per day"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Urothelial",
+      "treatment_modalities": ["immunotherapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "EMERGENCY",
+    "expected_rules": ["colitis_g4"],
+    "rationale": "Grade 4 immune-related colitis is life-threatening. Risk of perforation, toxic megacolon. IV methylprednisolone 1–2 mg/kg/day + GI emergency evaluation. Infliximab if steroid-refractory. Permanent immunotherapy discontinuation. NCCN Immunotherapy Toxicities v1.2024."
+  },
+  {
+    "id": "V-025",
+    "name": "irAE Hypophysitis — Headache and Fatigue",
+    "category": "irae",
+    "description": "Melanoma patient on ipilimumab with 2 weeks of severe fatigue, persistent frontal headache, and nausea",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fatigue",
+          "ctcae_grade": 2,
+          "severity_descriptor": "moderate",
+          "duration_hours": 336,
+          "descriptors": ["headache", "head pain", "persistent", "affecting daily activities"]
+        },
+        {
+          "name": "nausea",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "descriptors": ["morning nausea"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Melanoma",
+      "treatment_modalities": ["immunotherapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "URGENT",
+    "expected_rules": ["hypophysitis_symptoms"],
+    "rationale": "Fatigue + persistent headache in ipilimumab patient = irAE hypophysitis until proven otherwise. Pituitary MRI + AM cortisol + TSH required urgently. Risk of adrenal crisis if missed. Hormone replacement therapy. NCCN Immunotherapy Toxicities v1.2024."
+  }
+]

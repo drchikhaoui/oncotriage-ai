@@ -1,0 +1,24 @@
+{
+  "name": "oncotriage",
+  "version": "1.0.0",
+  "description": "AI-powered oncology symptom triage — CTCAE v5.0 + NCCN guidelines.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/output.css",
+    "watch:css": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.14",
+    "tailwindcss": "^3.4.19",
+    "tailwindcss-rtl": "^0.9.0"
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "version": "NCCN Clinical Practice Guidelines in Oncology — Supportive Care",
+  "reference_year": "2024",
+  "source": "NCCN Guidelines v2.2024 — Antiemesis, Fever and Neutropenia, Cancer-Related Fatigue, Adult Cancer Pain",
+  "triage_levels": {
+    "EMERGENCY": {
+      "label": "EMERGENCY",
+      "color": "red",
+      "emoji": "🔴",
+      "action": "Call 911 or go to the nearest Emergency Department immediately. Do NOT wait for a clinic appointment.",
+      "timeframe": "Immediate — within minutes"
+    },
+    "URGENT": {
+      "label": "URGENT",
+      "color": "orange",
+      "emoji": "🟠",
+      "action": "Contact your oncology team or nurse line NOW. Same-day evaluation required.",
+      "timeframe": "Within hours — same day"
+    },
+    "ROUTINE": {
+      "label": "ROUTINE",
+      "color": "yellow",
+      "emoji": "🟡",
+      "action": "Schedule an appointment with your oncology team within 24-48 hours.",
+      "timeframe": "Within 24-48 hours"
+    },
+    "SELF_CARE": {
+      "label": "SELF-CARE",
+      "color": "green",
+      "emoji": "🟢",
+      "action": "Manage at home with the following guidance. Monitor for worsening. Call if symptoms escalate.",
+      "timeframe": "Home management — reassess in 24-48 hours"
+    }
+  },
+  "rules": [
+    {
+      "id": "FN-001",
+      "name": "Febrile Neutropenia — Single High Fever",
+      "guideline": "NCCN Prevention and Treatment of Cancer-Related Infections v2.2024",
+      "citation": "NCCN Guidelines v2.2024; Freifeld AG et al. CID 2011;52:e56-e93",
+      "trigger": {
+        "symptom": "fever",
+        "condition": "temperature >= 38.3",
+        "unit": "celsius"
+      },
+      "context_required": {
+        "recent_chemo_days": 14
+      },
+      "triage_level": "EMERGENCY",
+      "reasoning_template": "Temperature {temp}°C meets NCCN febrile neutropenia threshold (≥38.3°C single reading). Last chemotherapy {chemo_days} days ago (within 14-day neutropenic window). Immediate ED evaluation required — blood cultures, CBC with differential, and empiric broad-spectrum antibiotics per NCCN FN protocol.",
+      "priority": 1
+    },
+    {
+      "id": "FN-002",
+      "name": "Febrile Neutropenia — Sustained Fever",
+      "guideline": "NCCN Prevention and Treatment of Cancer-Related Infections v2.2024",
+      "citation": "NCCN Guidelines v2.2024",
+      "trigger": {
+        "symptom": "fever",
+        "condition": "temperature >= 38.0",
+        "duration": ">= 60 minutes",
+        "unit": "celsius"
+      },
+      "context_required": {
+        "recent_chemo_days": 14
+      },
+      "triage_level": "EMERGENCY",
+      "reasoning_template": "Temperature {temp}°C sustained for ≥1 hour meets alternate NCCN febrile neutropenia criterion. Last chemotherapy {chemo_days} days ago. Emergency evaluation required.",
+      "priority": 1
+    },
+    {
+      "id": "RESP-001",
+      "name": "Dyspnea at Rest",
+      "guideline": "NCCN Supportive Care — Symptom Management",
+      "citation": "CTCAE v5.0 Grade 3 Dyspnea; NCCN Survivorship v2.2024",
+      "trigger": {
+        "symptom": "dyspnea",
+        "ctcae_grade_min": 3,
+        "descriptor": "at_rest"
+      },
+      "triage_level": "EMERGENCY",
+      "reasoning_template": "Dyspnea at rest (CTCAE Grade ≥3) is a life-threatening emergency in oncology patients. Possible etiologies include pulmonary embolism, pleural effusion, cardiac tamponade, or pneumonitis. Immediate emergency evaluation required.",
+      "priority": 1
+    },
+    {
+      "id": "NEURO-001",
+      "name": "Neurologic Red Flags",
+      "guideline": "NCCN Central Nervous System Cancers; NCCN Survivorship",
+      "citation": "NCCN CNS Cancers v1.2024",
+      "trigger": {
+        "symptom": "neurologic",
+        "descriptors": ["new focal weakness", "sudden severe headache", "vision changes", "altered mental status", "seizure", "fall"]
+      },
+      "triage_level": "EMERGENCY",
+      "reasoning_template": "New neurologic symptoms ({symptoms}) in an oncology patient require emergency evaluation to rule out brain metastasis, leptomeningeal disease, stroke, or cord compression. Immediate imaging required.",
+      "priority": 1
+    },
+    {
+      "id": "BLEED-001",
+      "name": "Bleeding with Thrombocytopenia History",
+      "guideline": "NCCN Cancer- and Chemotherapy-Induced Anemia",
+      "citation": "NCCN Hematopoietic Growth Factors v2.2024",
+      "trigger": {
+        "symptom": "bleeding",
+        "ctcae_grade_min": 1
+      },
+      "context": {
+        "thrombocytopenia_history": true
+      },
+      "triage_level": "URGENT",
+      "reasoning_template": "Any bleeding in a patient with thrombocytopenia history requires urgent evaluation. Platelet count may be critically low. Transfusion support and oncology assessment needed same day.",
+      "priority": 2
+    },
+    {
+      "id": "BLEED-002",
+      "name": "Grade 3+ Bleeding",
+      "guideline": "NCCN Supportive Care",
+      "citation": "CTCAE v5.0; NCCN Guidelines",
+      "trigger": {
+        "symptom": "bleeding",
+        "ctcae_grade_min": 3
+      },
+      "triage_level": "EMERGENCY",
+      "reasoning_template": "Grade {grade} bleeding (CTCAE v5.0) — transfusion or operative intervention may be required. Emergency evaluation required.",
+      "priority": 1
+    },
+    {
+      "id": "GI-001",
+      "name": "Dehydration Risk — Severe Vomiting",
+      "guideline": "NCCN Antiemesis v2.2024",
+      "citation": "NCCN Antiemesis v2.2024; Roila F et al. Ann Oncol 2016",
+      "trigger": {
+        "symptom": "vomiting",
+        "ctcae_grade_min": 3
+      },
+      "triage_level": "URGENT",
+      "reasoning_template": "Grade {grade} vomiting (≥6 episodes/24h, CTCAE v5.0) carries significant dehydration risk. IV hydration, antiemetic escalation, and electrolyte assessment required on a same-day basis.",
+      "priority": 2
+    },
+    {
+      "id": "GI-002",
+      "name": "Dehydration Risk — Severe Diarrhea",
+      "guideline": "NCCN Survivorship v2.2024",
+      "citation": "NCCN Survivorship v2.2024; Benson AB et al. J Clin Oncol 2004",
+      "trigger": {
+        "symptom": "diarrhea",
+        "ctcae_grade_min": 3
+      },
+      "triage_level": "URGENT",
+      "reasoning_template": "Grade {grade} diarrhea (≥7 stools/day above baseline, CTCAE v5.0) requires urgent assessment for dehydration, electrolyte disturbance, and possible infectious etiology (C. difficile). Same-day evaluation required.",
+      "priority": 2
+    },
+    {
+      "id": "PAIN-001",
+      "name": "Uncontrolled Severe Pain",
+      "guideline": "NCCN Adult Cancer Pain v2.2024",
+      "citation": "NCCN Adult Cancer Pain v2.2024",
+      "trigger": {
+        "symptom": "pain",
+        "ctcae_grade_min": 3,
+        "condition": "uncontrolled"
+      },
+      "triage_level": "URGENT",
+      "reasoning_template": "Grade {grade} pain (NRS {nrs}/10, CTCAE v5.0) unresponsive to current analgesic regimen. Per NCCN Adult Cancer Pain guidelines, dose titration and reassessment required same day. Consider IV/SC opioid rotation.",
+      "priority": 2
+    },
+    {
+      "id": "PAIN-002",
+      "name": "Severe Uncontrolled Pain (Grade 4)",
+      "guideline": "NCCN Adult Cancer Pain v2.2024",
+      "citation": "NCCN Adult Cancer Pain v2.2024",
+      "trigger": {
+        "symptom": "pain",
+        "ctcae_grade_min": 4
+      },
+      "triage_level": "EMERGENCY",
+      "reasoning_template": "Grade 4 pain (NRS 10/10, CTCAE v5.0) — disabling, unable to perform self-care. Emergency pain management required. Rule out new oncologic emergency (cord compression, pathologic fracture, organ obstruction).",
+      "priority": 1
+    },
+    {
+      "id": "GI-003",
+      "name": "Constipation — Suspected Obstruction",
+      "guideline": "NCCN Supportive Care",
+      "citation": "CTCAE v5.0; NCCN Guidelines",
+      "trigger": {
+        "symptom": "constipation",
+        "ctcae_grade_min": 4,
+        "descriptor": "obstipation"
+      },
+      "triage_level": "EMERGENCY",
+      "reasoning_template": "Grade 4 constipation with obstipation — possible bowel obstruction in oncology patient. Emergency surgical evaluation required.",
+      "priority": 1
+    },
+    {
+      "id": "MUC-001",
+      "name": "Severe Mucositis — Unable to Swallow",
+      "guideline": "NCCN Prevention and Treatment of Cancer-Related Infections",
+      "citation": "CTCAE v5.0; NCCN Supportive Care",
+      "trigger": {
+        "symptom": "mucositis",
+        "ctcae_grade_min": 3
+      },
+      "triage_level": "URGENT",
+      "reasoning_template": "Grade {grade} oral mucositis (CTCAE v5.0) — severe pain interfering with oral intake. Nutritional support, aggressive pain management, and infection prophylaxis review required. Same-day evaluation.",
+      "priority": 2
+    },
+    {
+      "id": "NEURO-002",
+      "name": "Worsening Peripheral Neuropathy",
+      "guideline": "NCCN Survivorship — CIPN",
+      "citation": "NCCN Survivorship v2.2024; Loprinzi CL et al.",
+      "trigger": {
+        "symptom": "peripheral_neuropathy",
+        "ctcae_grade_min": 3
+      },
+      "triage_level": "ROUTINE",
+      "reasoning_template": "Grade {grade} peripheral neuropathy (CTCAE v5.0) limiting self-care ADLs. Per NCCN CIPN guidelines, dose modification of neurotoxic chemotherapy and neurology referral should be considered. Schedule within 24-48 hours.",
+      "priority": 3
+    },
+    {
+      "id": "FAT-001",
+      "name": "Severe Cancer-Related Fatigue",
+      "guideline": "NCCN Cancer-Related Fatigue v2.2024",
+      "citation": "NCCN Cancer-Related Fatigue v2.2024",
+      "trigger": {
+        "symptom": "fatigue",
+        "ctcae_grade_min": 3
+      },
+      "triage_level": "ROUTINE",
+      "reasoning_template": "Grade {grade} fatigue (CTCAE v5.0) not relieved by rest, limiting self-care ADLs. NCCN recommends screening for treatable contributing factors: anemia (CBC), hypothyroidism (TSH), depression (PHQ-9), sleep disturbance. Schedule within 24-48 hours.",
+      "priority": 3
+    },
+    {
+      "id": "FEVER-001",
+      "name": "Fever Without Recent Chemo",
+      "guideline": "NCCN Supportive Care",
+      "citation": "CTCAE v5.0; NCCN Guidelines",
+      "trigger": {
+        "symptom": "fever",
+        "ctcae_grade_min": 2
+      },
+      "triage_level": "URGENT",
+      "reasoning_template": "Grade {grade} fever ({temp}°C) in oncology patient without recent chemotherapy. Infectious workup required — consider immunosuppression from steroids, biologic agents, or disease-related immunodeficiency.",
+      "priority": 2
+    }
+  ]
+}

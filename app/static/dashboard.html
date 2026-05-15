@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OncoTriage — Clinician Dashboard</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="logo">Onco<span>Triage</span> <span style="font-size:12px;font-weight:400;color:#64748b;margin-left:8px;">Clinician Dashboard</span></div>
+  <nav>
+    <a href="/">Patient Intake</a>
+    <a href="/dashboard">Dashboard</a>
+  </nav>
+</header>
+
+<div class="container-wide">
+  <div style="margin-bottom:24px;">
+    <h1 style="font-size:20px;font-weight:700;">Triage Dashboard</h1>
+    <p style="color:var(--color-text-secondary);font-size:13px;margin-top:4px;">Recent patient triage sessions. All data is anonymous — no PHI stored.</p>
+  </div>
+
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total Triages</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--color-emergency)" id="stat-emergency">—</div><div class="stat-label">Emergency</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--color-urgent)" id="stat-urgent">—</div><div class="stat-label">Urgent</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--color-selfcare)" id="stat-selfcare">—</div><div class="stat-label">Self-Care</div></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="card-title" style="margin:0;">Recent Triage Sessions</div>
+      <div style="display:flex;gap:8px;">
+        <select id="level-filter" onchange="loadTriages()" style="width:auto;padding:6px 10px;font-size:13px;">
+          <option value="">All Levels</option>
+          <option value="EMERGENCY">Emergency</option>
+          <option value="URGENT">Urgent</option>
+          <option value="ROUTINE">Routine</option>
+          <option value="SELF_CARE">Self-Care</option>
+        </select>
+        <button class="btn btn-secondary btn-sm" onclick="loadTriages()">Refresh</button>
+      </div>
+    </div>
+
+    <div id="table-loading" class="loading"><div class="spinner"></div> Loading...</div>
+    <div id="table-container" style="overflow-x:auto;display:none;">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Session ID</th>
+            <th>Triage Level</th>
+            <th>Cancer Type</th>
+            <th>Chemo (days ago)</th>
+            <th>LLM Used</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="triage-table-body"></tbody>
+      </table>
+    </div>
+    <div id="table-empty" style="display:none;padding:32px;text-align:center;color:var(--color-text-secondary);font-size:14px;">
+      No triage sessions recorded yet. <a href="/" style="color:var(--color-accent);">Start an assessment →</a>
+    </div>
+  </div>
+</div>
+
+<!-- Detail modal -->
+<div id="detail-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;overflow-y:auto;">
+  <div style="max-width:680px;margin:40px auto;padding:16px;">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <strong>Session Detail</strong>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button>
+      </div>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function loadStats() {
+  try {
+    const res = await fetch('/api/dashboard/stats');
+    const data = await res.json();
+    document.getElementById('stat-total').textContent = data.total;
+    document.getElementById('stat-emergency').textContent = data.by_level?.EMERGENCY || 0;
+    document.getElementById('stat-urgent').textContent = data.by_level?.URGENT || 0;
+    document.getElementById('stat-selfcare').textContent = data.by_level?.SELF_CARE || 0;
+  } catch(e) {}
+}
+
+async function loadTriages() {
+  const level = document.getElementById('level-filter').value;
+  const url = '/api/dashboard/recent?limit=100' + (level ? `&level=${level}` : '');
+  document.getElementById('table-loading').style.display = 'flex';
+  document.getElementById('table-container').style.display = 'none';
+  document.getElementById('table-empty').style.display = 'none';
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.triages;
+    document.getElementById('table-loading').style.display = 'none';
+    if (!rows.length) {
+      document.getElementById('table-empty').style.display = 'block';
+      return;
+    }
+    const tbody = document.getElementById('triage-table-body');
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td style="color:var(--color-text-secondary)">${new Date(r.created_at).toLocaleString()}</td>
+        <td style="font-family:monospace;font-size:12px;color:var(--color-text-secondary)">${r.session_id.slice(0,8)}…</td>
+        <td><span class="level-pill ${r.triage_level}">${r.triage_level.replace('_',' ')}</span></td>
+        <td>${r.cancer_type || '—'}</td>
+        <td>${r.days_since_chemo != null ? r.days_since_chemo : '—'}</td>
+        <td>${r.llm_used ? '✓' : '—'}</td>
+        <td><button class="btn btn-secondary btn-sm" onclick="showDetail('${r.session_id}')">View</button></td>
+      </tr>
+    `).join('');
+    document.getElementById('table-container').style.display = 'block';
+  } catch(e) {
+    document.getElementById('table-loading').style.display = 'none';
+    document.getElementById('table-empty').style.display = 'block';
+  }
+}
+
+async function showDetail(sessionId) {
+  document.getElementById('detail-modal').style.display = 'block';
+  document.getElementById('modal-content').innerHTML = '<div class="loading"><div class="spinner"></div> Loading…</div>';
+  try {
+    const res = await fetch(`/api/dashboard/session/${sessionId}`);
+    const data = await res.json();
+    const s = data.session;
+    const symptoms = data.symptoms || [];
+    const rules = data.rules || [];
+    document.getElementById('modal-content').innerHTML = `
+      <p style="margin-bottom:12px;"><strong>Session:</strong> <code>${s.session_id}</code></p>
+      <p style="margin-bottom:4px;"><strong>Triage Level:</strong> <span class="level-pill ${s.triage_level}">${s.triage_level.replace('_',' ')}</span></p>
+      <p style="margin-bottom:4px;font-size:13px;color:var(--color-text-secondary);">Time: ${new Date(s.created_at).toLocaleString()}</p>
+      <p style="margin-bottom:16px;font-size:13px;color:var(--color-text-secondary);">Cancer Type: ${s.cancer_type || '—'} | Days since chemo: ${s.days_since_chemo ?? '—'}</p>
+      ${symptoms.length ? `
+        <strong style="font-size:13px;">Symptoms (CTCAE Graded)</strong>
+        <ul style="margin:8px 0 16px;padding-left:20px;font-size:13px;">
+          ${symptoms.map(sym => `<li>${sym.symptom_name} — Grade ${sym.ctcae_grade} (${sym.severity})</li>`).join('')}
+        </ul>` : ''}
+      ${rules.length ? `
+        <strong style="font-size:13px;">Reasoning Steps</strong>
+        <ul class="reasoning-list" style="margin-top:8px;">
+          ${rules.map((r, i) => `<li><div class="step-num">${i+1}</div><div class="step-content">${r.reasoning}<span class="step-source">${r.citation || ''}</span></div></li>`).join('')}
+        </ul>` : ''}
+    `;
+  } catch(e) {
+    document.getElementById('modal-content').innerHTML = '<p style="color:var(--color-emergency)">Failed to load session detail.</p>';
+  }
+}
+
+function closeModal() {
+  document.getElementById('detail-modal').style.display = 'none';
+}
+
+loadStats();
+loadTriages();
+</script>
+</body>
+</html>

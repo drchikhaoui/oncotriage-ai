@@ -2,7 +2,11 @@
 {% block title %}{{ i18n.get('visual_triage.title', 'Photo Triage') }}{% endblock %}
 
 {% block content %}
-<div x-data='visualTriage({{ ae_types | tojson }})' class="max-w-2xl mx-auto">
+<div x-data='visualTriage(
+  {{ ae_types | tojson }},
+  {{ {"emergency": i18n.get("triage.action.emergency", "Go to Emergency immediately."), "urgent": i18n.get("triage.action.urgent", "Contact your oncology team now."), "routine": i18n.get("triage.action.routine", "Schedule within 24–48 hours."), "self_care": i18n.get("triage.action.self_care", "Manage at home.")} | tojson }},
+  {{ [i18n.get("visual_triage.processing.uploading", "Uploading..."), i18n.get("visual_triage.processing.stripping_exif", "Stripping metadata..."), i18n.get("visual_triage.processing.analyzing", "Analyzing..."), i18n.get("visual_triage.processing.cross_referencing", "Cross-referencing..."), i18n.get("visual_triage.processing.applying_rules", "Applying rules..."), i18n.get("visual_triage.processing.building_trace", "Building trace...")] | tojson }}
+)' class="max-w-2xl mx-auto">
 
   <!-- Progress bar -->
   <div class="mb-6">
@@ -99,6 +103,11 @@
                  placeholder="{{ i18n.get('intake.cancer_type.placeholder', 'e.g. Lung, Breast, Melanoma') }}"
                  class="w-full text-sm border border-stone-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sage-400">
         </div>
+        <label class="flex items-center gap-2.5 text-sm text-stone-700 mt-1 cursor-pointer">
+          <input type="checkbox" x-model="thrombocytopeniaHistory"
+                 class="rounded text-sage-500 focus:ring-sage-400">
+          {{ i18n.get('visual_triage.thrombocytopenia_history', 'History of low platelet count (thrombocytopenia)') }}
+        </label>
       </div>
     </details>
 
@@ -519,11 +528,18 @@
         <!-- Action buttons -->
         <div class="flex gap-3 pt-2">
           <button @click="retake()"
-                  class="flex-1 py-3 rounded-xl border border-stone-200 text-stone-600 text-sm font-medium hover:bg-stone-50 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-300">
+                  class="no-print flex-1 py-3 rounded-xl border border-stone-200 text-stone-600 text-sm font-medium hover:bg-stone-50 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-300">
             {{ i18n.get('visual_triage.capture.retake', 'Retake Photo') }}
           </button>
+          <button onclick="window.print()"
+                  class="no-print py-3 px-4 rounded-xl border border-stone-200 text-stone-600 text-sm font-medium hover:bg-stone-50 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-300 flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
+            {{ i18n.get('common.print', 'Print') }}
+          </button>
           <a href="/"
-             class="flex-1 py-3 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-sm font-semibold text-center transition-colors focus:outline-none focus:ring-2 focus:ring-sage-400 focus:ring-offset-2">
+             class="no-print flex-1 py-3 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-sm font-semibold text-center transition-colors focus:outline-none focus:ring-2 focus:ring-sage-400 focus:ring-offset-2">
             {{ i18n.get('common.new_assessment', 'New Assessment') }}
           </a>
         </div>

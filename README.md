@@ -111,15 +111,15 @@ cp .env.example .env
 # (GOOGLE_AI_STUDIO_API_KEY is free: https://aistudio.google.com/app/apikey)
 
 # Start the server
-uv run uvicorn app.main:app --reload --port 8001
+uv run uvicorn app.main:app --reload --port 8000
 ```
 
 | URL | Purpose |
 |---|---|
-| http://localhost:8001 | Patient symptom intake |
-| http://localhost:8001/visual-triage | Photo-based AE grading |
-| http://localhost:8001/dashboard | Clinician dashboard |
-| http://localhost:8001/docs | FastAPI interactive API docs |
+| http://localhost:8000 | Patient symptom intake |
+| http://localhost:8000/visual-triage | Photo-based AE grading |
+| http://localhost:8000/dashboard | Clinician dashboard |
+| http://localhost:8000/docs | FastAPI interactive API docs |
 
 ---
 
@@ -192,7 +192,7 @@ The app runs via `uvicorn app.main:app --host 0.0.0.0 --port $PORT`.
 
 ```bash
 docker build -t oncotriage .
-docker run -p 8001:8001 --env-file .env oncotriage
+docker run -p 8000:8000 --env-file .env oncotriage
 ```
 
 ---

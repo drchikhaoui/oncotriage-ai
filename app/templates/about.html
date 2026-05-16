@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ i18n.get('about.title', 'About') }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+
+  <h1 class="text-2xl font-bold text-stone-900 mb-2">{{ i18n.get('about.title', 'About OncoTriage AI') }}</h1>
+  <p class="text-sm text-stone-500 mb-8">{{ i18n.get('about.subtitle', 'Open-source oncology symptom triage prototype') }}</p>
+
+  <!-- NOT a medical device — prominent -->
+  <div class="mb-6 p-4 bg-red-50 border-2 border-red-300 rounded-xl">
+    <p class="font-bold text-red-800 text-sm">{{ i18n.get('about.not_a_device', 'NOT a medical device.') }}</p>
+    <p class="text-xs text-red-700 mt-1">{{ i18n.get('welcome.disclaimer', 'This is a portfolio prototype. NOT a medical device. Do not use for real clinical decisions.') }}</p>
+  </div>
+
+  <!-- What is this -->
+  <section class="mb-6">
+    <h2 class="text-base font-semibold text-stone-800 mb-2">{{ i18n.get('about.what_is_this', 'What is OncoTriage AI?') }}</h2>
+    <p class="text-sm text-stone-600 leading-relaxed">
+      OncoTriage AI is an open-source clinical decision support prototype for oncology symptom triage.
+      It helps patients describe symptoms, applies COSTaRS v2020 evidence-based triage logic, and
+      generates a triage recommendation (Emergency / Urgent / Routine / Self-Care).
+    </p>
+  </section>
+
+  <!-- Clinical foundation -->
+  <section class="mb-6">
+    <h2 class="text-base font-semibold text-stone-800 mb-2">Clinical Foundation</h2>
+    <ul class="text-sm text-stone-600 space-y-1 list-disc list-inside">
+      <li><a href="https://costars.ca" target="_blank" rel="noopener" class="text-sage-700 hover:underline">COSTaRS v2020</a> — evidence-based oncology triage rules</li>
+      <li>NCCN Clinical Practice Guidelines</li>
+      <li>CTCAE v5.0 adverse event grading</li>
+      <li>ASCO irAE Management Guidelines 2021</li>
+      <li>MASCC/ISOO/ESMO toxicity guidelines</li>
+    </ul>
+  </section>
+
+  <!-- AI disclosure -->
+  <section class="mb-6">
+    <h2 class="text-base font-semibold text-stone-800 mb-2">AI Disclosure</h2>
+    <p class="text-sm text-stone-600 leading-relaxed">
+      The photo triage feature uses a fallback chain of AI vision providers (Google Gemini, OpenRouter, Groq, HuggingFace)
+      for CTCAE visual grading. AI outputs are assistive only — all findings require clinical verification.
+    </p>
+  </section>
+
+  <!-- Privacy -->
+  <section class="mb-6">
+    <h2 class="text-base font-semibold text-stone-800 mb-2">Privacy</h2>
+    <p class="text-sm text-stone-600 leading-relaxed">
+      No images are stored. Photos are processed in memory only and discarded immediately after analysis.
+      No personally identifiable information (PII) is collected. All triage sessions are stored anonymously.
+    </p>
+  </section>
+
+  <!-- Languages -->
+  <section class="mb-6">
+    <h2 class="text-base font-semibold text-stone-800 mb-2">Languages</h2>
+    <p class="text-sm text-stone-600">English, French, and Arabic — with Tunisia-aware emergency numbers.</p>
+  </section>
+
+  <!-- Source code -->
+  <section class="mb-6">
+    <h2 class="text-base font-semibold text-stone-800 mb-2">Source Code</h2>
+    <p class="text-sm text-stone-600">
+      <a href="https://github.com" target="_blank" rel="noopener" class="text-sage-700 hover:underline">Available on GitHub</a>
+      — MIT License.
+    </p>
+  </section>
+
+  <div class="mt-8">
+    <a href="/" class="text-sm text-sage-700 hover:text-sage-900 hover:underline">← {{ i18n.get('common.back_to_home', 'Back to Home') }}</a>
+  </div>
+
+</div>
+{% endblock %}

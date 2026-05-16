@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     huggingface_vision_model: str = "meta-llama/Llama-3.2-11B-Vision-Instruct"
     vision_provider_chain: list[str] = ["gemini", "openrouter", "groq", "huggingface"]
 
+    # Dashboard auth (HTTP Basic)
+    clinician_user: str = "clinician"
+    clinician_password: str = "change-me-in-production"
+
     # Privacy
     debug_retain_images: bool = False  # never True in production
 

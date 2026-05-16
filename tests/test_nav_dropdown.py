@@ -12,12 +12,16 @@ from app.main import app
 
 PAGES = ["/", "/dashboard", "/visual-triage"]
 
+_AUTH = ("clinician", "change-me-in-production")
+
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
 async def _get(path: str, lang: str = "en") -> str:
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        resp = await client.get(path, params={"lang": lang})
+        # Dashboard requires HTTP Basic auth
+        auth = _AUTH if path == "/dashboard" else None
+        resp = await client.get(path, params={"lang": lang}, auth=auth)
     assert resp.status_code == 200
     return resp.text
 

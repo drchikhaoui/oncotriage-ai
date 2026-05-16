@@ -15,7 +15,7 @@ from pathlib import Path
 from app.core.costars_engine import grade_all
 from app.core.irae_engine import evaluate_irae
 from app.core.triage_engine import evaluate_symptoms
-from app.integrations import gemini_vision, nci_thesaurus, openfda, pubmed
+from app.integrations import image_processing as gemini_vision, nci_thesaurus, openfda, pubmed
 from app.integrations.vision_providers.chain import get_chain
 from app.integrations.vision_providers.prompts import build_prompt
 from app.models.patient import PatientContext
@@ -45,6 +45,11 @@ _AE_TO_SYMPTOM: dict[str, SymptomName] = {
     "oral_mucositis": SymptomName.MUCOSITIS,
     "unsure": SymptomName.SKIN_RASH,
 }
+
+
+def get_all_aes() -> list[dict]:
+    """Return all AE types, regardless of treatment modality."""
+    return _AE_MAP["ae_types"]
 
 
 def get_available_aes(modalities: list[str]) -> list[dict]:

@@ -641,5 +641,267 @@
     "expected_triage_level": "URGENT",
     "expected_rules": ["hypophysitis_symptoms"],
     "rationale": "Fatigue + persistent headache in ipilimumab patient = irAE hypophysitis until proven otherwise. Pituitary MRI + AM cortisol + TSH required urgently. Risk of adrenal crisis if missed. Hormone replacement therapy. NCCN Immunotherapy Toxicities v1.2024."
+  },
+  {
+    "id": "V-026",
+    "name": "Grade 2 Fatigue — Routine (Breast Cancer, Adjuvant Chemo)",
+    "category": "routine",
+    "description": "Breast cancer patient on AC-T regimen, cycle 3, reporting moderate fatigue limiting household activities but able to perform self-care.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fatigue",
+          "ctcae_grade": 2,
+          "severity_descriptor": "moderate",
+          "duration_hours": 72,
+          "descriptors": ["limiting household chores", "affecting instrumental ADLs", "improved with rest"]
+        }
+      ],
+      "last_chemo_date_offset_days": 7,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Breast",
+      "treatment_modalities": ["cytotoxic_chemo"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "ROUTINE",
+    "expected_rules": ["FAT-001b"],
+    "rationale": "Grade 2 fatigue limiting instrumental ADLs during adjuvant chemotherapy. COSTaRS v2020 Fatigue Protocol triggers ROUTINE triage: CBC for anemia, TSH for hypothyroidism, PHQ-9 screen, exercise prescription. No red-flag features (no fever, no dyspnea at rest)."
+  },
+  {
+    "id": "V-027",
+    "name": "Grade 2 Nausea — Routine (Lung Cancer, Cisplatin)",
+    "category": "routine",
+    "description": "NSCLC patient on cisplatin/pemetrexed day 5 post-cycle, with persistent nausea limiting oral intake but not vomiting. No dehydration signs.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "nausea",
+          "ctcae_grade": 2,
+          "severity_descriptor": "moderate",
+          "duration_hours": 48,
+          "descriptors": ["limiting oral intake", "eating less than usual", "not relieved by ondansetron"]
+        }
+      ],
+      "last_chemo_date_offset_days": 5,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Lung",
+      "treatment_modalities": ["cytotoxic_chemo"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "ROUTINE",
+    "expected_rules": ["GI-001b"],
+    "rationale": "Grade 2 nausea limiting oral intake on cisplatin-based regimen. COSTaRS v2020 Nausea/Vomiting Protocol: antiemetic optimization (add aprepitant, switch to lorazepam PRN) within 24-48h. Not emergency because no vomiting, no dehydration, no fever."
+  },
+  {
+    "id": "V-028",
+    "name": "Grade 2 Oral Mucositis — Routine (Head and Neck, Concurrent CRT)",
+    "category": "routine",
+    "description": "Head and neck SCC patient on concurrent cisplatin and radiation week 4, with painful mouth sores requiring soft diet modification. Oral intake maintained.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "mucositis",
+          "ctcae_grade": 2,
+          "severity_descriptor": "moderate",
+          "duration_hours": 96,
+          "descriptors": ["painful ulcers", "modifying diet to soft foods", "oral intake maintained", "pain with swallowing"]
+        }
+      ],
+      "last_chemo_date_offset_days": 3,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Head and Neck",
+      "treatment_modalities": ["cytotoxic_chemo", "radiation"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "ROUTINE",
+    "expected_rules": ["MUC-001b"],
+    "rationale": "Grade 2 mucositis with painful ulcers requiring diet modification during concurrent chemoradiation. MASCC/ISOO 2020 + COSTaRS v2020: magic mouthwash, topical lidocaine, antifungal prophylaxis, intensified oral hygiene. Grade 3 would require IV nutritional support — current intake maintained so ROUTINE."
+  },
+  {
+    "id": "V-029",
+    "name": "Grade 2 Constipation — Routine (Colorectal Cancer, Opioid-Induced)",
+    "category": "routine",
+    "description": "Colorectal cancer patient on FOLFOX + opioid analgesia with 4 days of no bowel movement and abdominal bloating. No obstruction signs.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "constipation",
+          "ctcae_grade": 2,
+          "severity_descriptor": "moderate",
+          "duration_hours": 96,
+          "descriptors": ["no bowel movement for 4 days", "abdominal bloating", "discomfort", "requiring laxatives"]
+        }
+      ],
+      "last_chemo_date_offset_days": 10,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Colorectal",
+      "treatment_modalities": ["cytotoxic_chemo"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "ROUTINE",
+    "expected_rules": ["GI-003c"],
+    "rationale": "Grade 2 constipation requiring laxative intervention on opioid-containing regimen. COSTaRS v2020 Constipation Protocol: bowel regimen review (add PEG 3350 or bisacodyl), dietary counseling, consider methylnaltrexone for opioid-induced constipation. No obstipation or obstruction signs."
+  },
+  {
+    "id": "V-030",
+    "name": "Grade 1 Nausea — Self-Care (Ovarian Cancer, Post-Chemo Day 1)",
+    "category": "self_care",
+    "description": "Ovarian cancer patient on carboplatin/paclitaxel, day 1 post-infusion, with mild nausea not affecting appetite. Responding to ondansetron.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "nausea",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "duration_hours": 6,
+          "descriptors": ["mild queasiness", "not affecting eating", "responding to antiemetics"]
+        }
+      ],
+      "last_chemo_date_offset_days": 1,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Ovarian",
+      "treatment_modalities": ["cytotoxic_chemo"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["GI-001c"],
+    "rationale": "Grade 1 nausea not affecting oral intake, responding to prescribed antiemetics. COSTaRS v2020: dietary adjustments (small frequent meals, cold foods, avoid strong odors), continue scheduled antiemetics. No escalation needed."
+  },
+  {
+    "id": "V-031",
+    "name": "Grade 1 Dyspnea — Self-Care (Lung Cancer, Post-Lobectomy Surveillance)",
+    "category": "self_care",
+    "description": "Early-stage NSCLC patient 3 months post-lobectomy on surveillance, reporting mild shortness of breath only on climbing two flights of stairs. No dyspnea at rest, no fever, no pleuritic pain.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "dyspnea",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "duration_hours": 168,
+          "at_rest": false,
+          "descriptors": ["exertional only", "two flights of stairs", "no pleuritic pain", "no fever"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Lung",
+      "treatment_modalities": [],
+      "treatment_status": "surveillance"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["RESP-003"],
+    "rationale": "Grade 1 dyspnea on exertion only, 3 months post-lobectomy. Expected compensatory adaptation. COSTaRS v2020 Dyspnea Protocol: monitor for worsening, respiratory rehab exercises. Criteria for escalation: dyspnea at rest, oxygen saturation <90%, pleuritic pain, fever (PE concern)."
+  },
+  {
+    "id": "V-032",
+    "name": "Grade 1 Fatigue — Self-Care (Prostate Cancer, Hormonal Therapy)",
+    "category": "self_care",
+    "description": "Prostate cancer patient on long-term androgen deprivation therapy with mild fatigue noted in the afternoon. Fully functional, self-care intact.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "fatigue",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "duration_hours": 336,
+          "descriptors": ["mild tiredness", "afternoon only", "not limiting activities", "self-care intact"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Prostate",
+      "treatment_modalities": ["hormonal_endocrine"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["DEFAULT-001"],
+    "rationale": "Grade 1 fatigue with preserved function on ADT — common expected side effect. COSTaRS v2020: structured exercise program (aerobic + resistance), sleep hygiene, energy conservation strategies. No CBC, TSH, or PHQ-9 urgency; address at next scheduled visit."
+  },
+  {
+    "id": "V-033",
+    "name": "Grade 1 Peripheral Neuropathy — Self-Care (Breast Cancer, Paclitaxel, Stable)",
+    "category": "self_care",
+    "description": "Breast cancer patient completing weekly paclitaxel, reporting stable mild tingling in fingertips and toes for 3 weeks. No weakness, no balance issues, no functional limitation.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "peripheral_neuropathy",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "duration_hours": 504,
+          "descriptors": ["mild tingling", "fingertips and toes", "symmetric", "stable", "no weakness", "no balance problems"]
+        }
+      ],
+      "last_chemo_date_offset_days": 3,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Breast",
+      "treatment_modalities": ["cytotoxic_chemo"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["DEFAULT-001"],
+    "rationale": "Grade 1 CIPN (tingling only, no functional impact) — stable on paclitaxel. COSTaRS v2020: fall risk counseling, protective footwear, document severity trajectory. Escalate to ROUTINE/URGENT if progresses to Grade 2 (limiting instrumental ADLs) requiring duloxetine or dose modification."
+  },
+  {
+    "id": "V-034",
+    "name": "Grade 1 Diarrhea — Self-Care (Breast Cancer, Targeted Therapy, Non-Immunotherapy)",
+    "category": "self_care",
+    "description": "HER2+ breast cancer patient on trastuzumab/pertuzumab with 1 extra loose stool per day above baseline for 2 days. No cramping, no blood, no dehydration.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "diarrhea",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "duration_hours": 48,
+          "descriptors": ["one extra stool per day", "loose consistency", "no blood", "no cramping", "no dehydration"]
+        }
+      ],
+      "last_chemo_date_offset_days": 14,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Breast",
+      "treatment_modalities": ["targeted_therapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["DEFAULT-001"],
+    "rationale": "Grade 1 diarrhea (1 extra stool/day) on HER2-directed targeted therapy with no immunotherapy component. COSTaRS v2020: BRAT diet, loperamide PRN, adequate hydration, avoid lactose and high-fat foods. Monitor for escalation to Grade 2 (4–6 stools/day)."
+  },
+  {
+    "id": "V-035",
+    "name": "Grade 1 Pain — Self-Care (Multiple Myeloma, Stable Bone Pain)",
+    "category": "self_care",
+    "description": "Multiple myeloma patient on maintenance lenalidomide with mild, chronic low back pain rated 2/10 on NRS. Managed with scheduled acetaminophen. No new neurologic symptoms.",
+    "input": {
+      "free_text": null,
+      "structured_symptoms": [
+        {
+          "name": "pain",
+          "ctcae_grade": 1,
+          "severity_descriptor": "mild",
+          "duration_hours": 720,
+          "pain_nrs": 2,
+          "descriptors": ["low back", "chronic", "stable", "no radiation to legs", "no weakness", "controlled with acetaminophen"]
+        }
+      ],
+      "last_chemo_date_offset_days": null,
+      "thrombocytopenia_history": false,
+      "cancer_type": "Multiple Myeloma",
+      "treatment_modalities": ["targeted_therapy"],
+      "treatment_status": "active_treatment"
+    },
+    "expected_triage_level": "SELF_CARE",
+    "expected_rules": ["DEFAULT-001"],
+    "rationale": "Grade 1 pain (NRS 2/10), stable and well-controlled on acetaminophen, with no new neurologic features (no radiculopathy, no leg weakness) in myeloma patient. COSTaRS v2020 Pain Protocol: current regimen effective, document at next visit. Escalation criteria: new neurologic symptoms (cord compression), NRS ≥4, inadequate control."
   }
 ]

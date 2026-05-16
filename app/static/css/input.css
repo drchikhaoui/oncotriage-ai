@@ -51,3 +51,15 @@
 /* Smooth page transitions */
 .htmx-swapping { opacity: 0; transition: opacity 0.15s ease-out; }
 .htmx-settling { opacity: 1; transition: opacity 0.15s ease-in; }
+
+/* Alpine.js cloak — hide until initialized */
+[x-cloak] { display: none !important; }
+
+/* Print styles */
+@media print {
+  nav, footer, .no-print { display: none !important; }
+  body { background: white !important; }
+  .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+  * { color: black !important; }
+  a[href]:after { content: " (" attr(href) ")"; font-size: 0.8em; }
+}

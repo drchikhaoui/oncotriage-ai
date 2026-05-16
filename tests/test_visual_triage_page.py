@@ -49,15 +49,11 @@ async def test_xdata_uses_single_quotes():
 
 @pytest.mark.asyncio
 async def test_embedded_ae_types_json_is_valid():
-    """The ae_types JSON embedded in x-data must be parseable."""
+    """The ae-options API returns all 6 AE types with correct IDs."""
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        resp = await client.get("/visual-triage")
-    html = resp.text
-    # Extract the JSON array from x-data='visualTriage([...])'
-    match = re.search(r"x-data='visualTriage\((\[.*?\])\)'", html, re.DOTALL)
-    assert match, "Could not find x-data='visualTriage([...])' in page"
-    json_str = match.group(1)
-    ae_types = json.loads(json_str)
+        resp = await client.get("/visual-triage/ae-options")
+    assert resp.status_code == 200
+    ae_types = resp.json()
     assert isinstance(ae_types, list)
     assert len(ae_types) == 6
     ids = [ae["id"] for ae in ae_types]
@@ -115,18 +111,10 @@ async def test_french_locale_renders():
 
 @pytest.mark.asyncio
 async def test_no_clinical_jargon_in_ae_labels():
-    """
-    Patient-facing AE card labels/descriptions must not expose clinical terminology.
-    The ctcae_term field must not appear in the visible card markup.
-    """
+    """Patient-facing AE labels must not expose clinical terminology."""
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        resp = await client.get("/visual-triage")
-    html = resp.text
-
-    # Extract embedded ae_types JSON and check patient-visible fields
-    match = re.search(r"x-data='visualTriage\((\[.*?\])\)'", html, re.DOTALL)
-    assert match, "Could not find ae_types JSON in page"
-    ae_types = json.loads(match.group(1))
+        resp = await client.get("/visual-triage/ae-options")
+    ae_types = resp.json()
 
     forbidden_in_labels = [
         "papulopustular", "maculo-papular", "erythrodysesthesia",
@@ -156,10 +144,8 @@ async def test_ctcae_term_not_rendered_in_card_html():
 async def test_unsure_option_present():
     """The 'unsure' option must be available in all AE types."""
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
-        resp = await client.get("/visual-triage")
-    html = resp.text
-    match = re.search(r"x-data='visualTriage\((\[.*?\])\)'", html, re.DOTALL)
-    ae_types = json.loads(match.group(1))
+        resp = await client.get("/visual-triage/ae-options")
+    ae_types = resp.json()
     unsure = next((ae for ae in ae_types if ae["id"] == "unsure"), None)
     assert unsure is not None
     assert "unsure" in unsure["label"]["en"].lower() or "not sure" in unsure["label"]["en"].lower()

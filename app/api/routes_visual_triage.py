@@ -3,7 +3,7 @@ import json
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Cookie, Form, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Cookie, Depends, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -18,8 +18,34 @@ router = APIRouter(prefix="/visual-triage", tags=["visual-triage"])
 TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
-ALLOWED_CONTENT_TYPES = {"image/jpeg", "image/png", "image/heic", "image/heif", "image/webp"}
-ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp"}
+
+def _detect_image_format(b: bytes) -> str | None:
+    """Magic-byte detection — does not trust client-supplied content-type."""
+    if b[:3] == b"\xff\xd8\xff":
+        return "jpeg"
+    if b[:8] == b"\x89PNG\r\n\x1a\n":
+        return "png"
+    if b[:4] == b"RIFF" and b[8:12] == b"WEBP":
+        return "webp"
+    if len(b) > 12 and b[4:12] in (
+        b"ftypheic", b"ftypheix", b"ftyphevc",
+        b"ftypheim", b"ftyphevm", b"ftypmif1",
+    ):
+        return "heic"
+    return None
+
+
+def _require_vision_enabled():
+    if settings.disable_vision:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "error": "vision_disabled",
+                "message": "Visual triage is disabled on this server.",
+                "retry_after": None,
+                "providers_tried": [],
+            },
+        )
 
 
 @router.get("", response_class=HTMLResponse)
@@ -33,7 +59,7 @@ async def visual_triage_page(
         effective_lang = "en"
 
     i18n = get_locale_data(effective_lang)
-    ae_types = visual_triage_engine._AE_MAP["ae_types"]
+    ae_types = visual_triage_engine.get_all_aes()
 
     return templates.TemplateResponse(
         request=request,
@@ -57,13 +83,12 @@ async def get_ae_options(modalities: str = "") -> list[dict]:
             "id": ae["id"],
             "label": ae["label"],
             "description": ae["description"],
-            "ctcae_term": ae["ctcae_term"],
         }
         for ae in options
     ]
 
 
-@router.post("/analyze")
+@router.post("/analyze", dependencies=[Depends(_require_vision_enabled)])
 async def analyze_image(
     request: Request,
     image: UploadFile,
@@ -74,20 +99,12 @@ async def analyze_image(
     locale: str = Form("en"),
     session_id: str = Form(""),
     anatomical_location: str = Form(""),
+    thrombocytopenia_history: str = Form("false"),
 ):
     """
     Receive uploaded image, run visual triage pipeline, return VisualTriageResult.
     Image bytes are discarded after processing — never persisted.
     """
-    # ── Validate upload ───────────────────────────────────────────────────────
-    if image.content_type not in ALLOWED_CONTENT_TYPES:
-        ext = Path(image.filename or "").suffix.lower()
-        if ext not in ALLOWED_EXTENSIONS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Unsupported file type: {image.content_type}. Use JPEG, PNG, HEIC, or WebP.",
-            )
-
     image_bytes = await image.read()
     if len(image_bytes) > settings.vision_max_image_bytes:
         raise HTTPException(
@@ -97,6 +114,14 @@ async def analyze_image(
 
     if not image_bytes:
         raise HTTPException(status_code=400, detail="Empty image file received.")
+
+    # ── Magic-byte image validation ───────────────────────────────────────────
+    detected = _detect_image_format(image_bytes)
+    if detected is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid image: not a supported format (JPEG/PNG/WebP/HEIC).",
+        )
 
     # ── Build patient context ─────────────────────────────────────────────────
     try:
@@ -132,17 +157,6 @@ async def analyze_image(
     )
 
     # ── Run vision pipeline ───────────────────────────────────────────────────
-    if settings.disable_vision:
-        raise HTTPException(
-            status_code=503,
-            detail={
-                "error": "vision_disabled",
-                "message": "Visual triage is disabled on this server.",
-                "retry_after": None,
-                "providers_tried": [],
-            },
-        )
-
     try:
         result = await visual_triage_engine.analyze_image(
             image_bytes=image_bytes,
@@ -157,7 +171,6 @@ async def analyze_image(
     except RuntimeError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except AllProvidersFailedError as exc:
-        # Parse retry_after from the first RateLimitError if present
         retry_after = getattr(exc, "retry_after_seconds", None)
         raise HTTPException(
             status_code=503,
@@ -176,7 +189,7 @@ async def analyze_image(
             "cancer_type": patient.cancer_type,
             "treatment_modalities": patient.treatment_modalities_str,
             "days_since_chemo": patient.days_since_chemo,
-            "thrombocytopenia_history": False,
+            "thrombocytopenia_history": thrombocytopenia_history.lower() == "true",
         },
     )
 

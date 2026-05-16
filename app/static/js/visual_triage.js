@@ -3,13 +3,14 @@
  * Mobile camera capture → Gemini Vision → COSTaRS triage
  */
 
+// Fallback strings (used if i18n data is not passed from the template)
 const PROCESSING_STEPS = [
-  'Uploading image securely...',
-  'Stripping image metadata (EXIF)...',
-  'Analyzing with AI vision...',
-  'Cross-referencing CTCAE v5.0 criteria...',
-  'Applying COSTaRS triage rules...',
-  'Building reasoning trace...',
+  'Uploading...',
+  'Stripping metadata...',
+  'Analyzing...',
+  'Cross-referencing...',
+  'Applying rules...',
+  'Building trace...',
 ];
 
 const TRIAGE_COLORS = {
@@ -20,9 +21,9 @@ const TRIAGE_COLORS = {
 };
 
 const TRIAGE_ACTIONS = {
-  EMERGENCY: 'Call 911 or go to Emergency immediately.',
-  URGENT: 'Contact your oncology team NOW — same-day evaluation required.',
-  ROUTINE: 'Schedule an appointment within 24–48 hours.',
+  EMERGENCY: 'Go to the Emergency Department immediately, or call your local emergency number.',
+  URGENT: 'Contact your oncology team now — same-day evaluation required.',
+  ROUTINE: 'Book an appointment within 24–48 hours.',
   SELF_CARE: 'Manage at home — monitor for worsening.',
 };
 
@@ -42,7 +43,7 @@ const GRADE_BADGE_COLORS = {
   4: 'bg-red-100 text-red-800',
 };
 
-function visualTriage(aeTypesData) {
+function visualTriage(aeTypesData, triageActionsData, processingStepsData) {
   return {
     step: 1,
     aeTypes: aeTypesData || [],
@@ -50,6 +51,7 @@ function visualTriage(aeTypesData) {
     modalities: [],
     cancerType: '',
     selectedLocations: [],
+    thrombocytopeniaHistory: false,
     selectedFile: null,
     previewUrl: null,
     fileSizeWarning: false,
@@ -59,8 +61,9 @@ function visualTriage(aeTypesData) {
     _retryCountdownTimer: null,
     result: null,
     processingStep: 0,
-    processingMessage: PROCESSING_STEPS[0],
-    processingSteps: PROCESSING_STEPS,
+    processingSteps: processingStepsData || PROCESSING_STEPS,
+    processingMessage: (processingStepsData || PROCESSING_STEPS)[0],
+    triageActions: triageActionsData || {},
     _processingTimer: null,
 
     // ── AE selection ────────────────────────────────────────────────────────
@@ -144,6 +147,7 @@ function visualTriage(aeTypesData) {
       formData.append('cancer_type', this.cancerType);
       formData.append('locale', document.documentElement.lang || 'en');
       formData.append('anatomical_location', this.selectedLocations.join(', '));
+      formData.append('thrombocytopenia_history', this.thrombocytopeniaHistory ? 'true' : 'false');
 
       try {
         const resp = await fetch('/visual-triage/analyze', {
@@ -152,7 +156,7 @@ function visualTriage(aeTypesData) {
         });
 
         clearInterval(this._processingTimer);
-        this.processingStep = PROCESSING_STEPS.length;
+        this.processingStep = this.processingSteps.length;
 
         let data;
         try {
@@ -230,9 +234,9 @@ function visualTriage(aeTypesData) {
     _startProcessingTimer() {
       let idx = 0;
       this._processingTimer = setInterval(() => {
-        idx = Math.min(idx + 1, PROCESSING_STEPS.length - 1);
+        idx = Math.min(idx + 1, this.processingSteps.length - 1);
         this.processingStep = idx;
-        this.processingMessage = PROCESSING_STEPS[idx];
+        this.processingMessage = this.processingSteps[idx];
       }, 3000);
     },
 
@@ -262,7 +266,8 @@ function visualTriage(aeTypesData) {
     },
 
     triageLevelAction(level) {
-      return TRIAGE_ACTIONS[level] || '';
+      const key = level?.toLowerCase();
+      return (key && this.triageActions[key]) || TRIAGE_ACTIONS[level] || '';
     },
 
     ctcaeGradeBadgeColor(grade) {

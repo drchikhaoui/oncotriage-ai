@@ -1,4 +1,4 @@
-.PHONY: install dev test seed clean
+.PHONY: install dev test ci lint seed clean
 
 install:
 	uv sync --extra dev
@@ -8,6 +8,13 @@ dev:
 
 test:
 	uv run pytest tests/ -v
+
+ci:
+	uv run ruff check app/ tests/
+	uv run pytest --tb=short -q
+
+lint:
+	uv run ruff check app/ tests/ --fix
 
 seed:
 	uv run python scripts/seed_demo_data.py

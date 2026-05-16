@@ -1,11 +1,13 @@
 from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
     app_env: str = "development"
     log_level: str = "INFO"
     anthropic_api_key: str = ""
@@ -36,10 +38,5 @@ class Settings(BaseSettings):
 
     # Privacy
     debug_retain_images: bool = False  # never True in production
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-
 
 settings = Settings()

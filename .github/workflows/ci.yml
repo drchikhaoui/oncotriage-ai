@@ -27,6 +27,22 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Verify Tailwind output.css is fresh
+        run: |
+          npm ci
+          npm run build:css
+          if [ -n "$(git status --porcelain app/static/css/output.css)" ]; then
+            echo "::error::output.css is out of date. Run 'npm run build:css' locally and commit."
+            git diff --stat app/static/css/output.css
+            exit 1
+          fi
+
       - name: Lint with ruff
         run: uv run ruff check app/ tests/
 
@@ -34,11 +50,6 @@ jobs:
         run: uv run pytest --tb=short -q
         env:
           ANTHROPIC_API_KEY: ""
-
-      - name: Build CSS
-        run: |
-          npm ci
-          npm run build:css
 
   docker:
     runs-on: ubuntu-latest

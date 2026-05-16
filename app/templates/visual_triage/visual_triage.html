@@ -18,7 +18,7 @@
       <div class="h-full bg-sage-500 rounded-full transition-all duration-500"
            :style="`width: ${(step / 4) * 100}%`"></div>
     </div>
-    <div class="flex justify-between mt-1.5 text-[10px] text-stone-400 font-medium uppercase tracking-wide">
+    <div class="hidden sm:flex justify-between mt-1.5 text-[10px] text-stone-400 font-medium uppercase tracking-wide">
       <span :class="step >= 1 ? 'text-sage-600' : ''">{{ i18n.get('visual_triage.step1', 'Select') }}</span>
       <span :class="step >= 2 ? 'text-sage-600' : ''">{{ i18n.get('visual_triage.step2', 'Capture') }}</span>
       <span :class="step >= 3 ? 'text-sage-600' : ''">{{ i18n.get('visual_triage.step3', 'Analyze') }}</span>

@@ -3,28 +3,11 @@
  * Mobile camera capture → Gemini Vision → COSTaRS triage
  */
 
-// Fallback strings (used if i18n data is not passed from the template)
-const PROCESSING_STEPS = [
-  'Uploading...',
-  'Stripping metadata...',
-  'Analyzing...',
-  'Cross-referencing...',
-  'Applying rules...',
-  'Building trace...',
-];
-
 const TRIAGE_COLORS = {
   EMERGENCY: 'border-red-500 bg-red-50 text-red-800',
   URGENT: 'border-orange-500 bg-orange-50 text-orange-800',
   ROUTINE: 'border-yellow-500 bg-yellow-50 text-yellow-700',
   SELF_CARE: 'border-green-500 bg-green-50 text-green-800',
-};
-
-const TRIAGE_ACTIONS = {
-  EMERGENCY: 'Go to the Emergency Department immediately, or call your local emergency number.',
-  URGENT: 'Contact your oncology team now — same-day evaluation required.',
-  ROUTINE: 'Book an appointment within 24–48 hours.',
-  SELF_CARE: 'Manage at home — monitor for worsening.',
 };
 
 const AE_ICONS = {
@@ -61,8 +44,8 @@ function visualTriage(aeTypesData, triageActionsData, processingStepsData) {
     _retryCountdownTimer: null,
     result: null,
     processingStep: 0,
-    processingSteps: processingStepsData || PROCESSING_STEPS,
-    processingMessage: (processingStepsData || PROCESSING_STEPS)[0],
+    processingSteps: processingStepsData || (() => { console.warn('[OncoTriage] processingStepsData missing — check locale template'); return ['[missing: visual_triage.processing.uploading]']; })(),
+    processingMessage: (processingStepsData || ['[missing: visual_triage.processing.uploading]'])[0],
     triageActions: triageActionsData || {},
     _processingTimer: null,
 
@@ -267,7 +250,12 @@ function visualTriage(aeTypesData, triageActionsData, processingStepsData) {
 
     triageLevelAction(level) {
       const key = level?.toLowerCase();
-      return (key && this.triageActions[key]) || TRIAGE_ACTIONS[level] || '';
+      if (key && this.triageActions[key]) return this.triageActions[key];
+      if (!this.triageActions || Object.keys(this.triageActions).length === 0) {
+        console.warn('[OncoTriage] triageActionsData missing — check locale template');
+        return `[missing: triage.action.${(level || 'unknown').toLowerCase()}]`;
+      }
+      return '';
     },
 
     ctcaeGradeBadgeColor(grade) {

@@ -1,14 +1,25 @@
 """Tests that patient-facing strings are not hardcoded in JS."""
 import json
 import pathlib
+import re
 
 
-def test_no_hardcoded_english_triage_actions_in_js():
-    js_path = pathlib.Path("app/static/js/visual_triage.js")
-    content = js_path.read_text()
-    assert "Call 911" not in content
-    assert "Contact your oncology team NOW" not in content
-    assert "Schedule an appointment within" not in content
+def test_visual_triage_js_has_no_hardcoded_english_patient_text():
+    """Patient-facing strings must come from i18n locale data, not JS constants."""
+    js = pathlib.Path("app/static/js/visual_triage.js").read_text()
+    forbidden_patterns = [
+        r"Go to the Emergency",
+        r"Contact your oncology team",
+        r"Book an appointment",
+        r"Schedule an appointment",
+        r"Manage at home",
+        r"Call (911|999|112|15|190)",
+    ]
+    found = [pat for pat in forbidden_patterns if re.search(pat, js)]
+    assert not found, (
+        f"Patient-facing strings found in visual_triage.js: {found}. "
+        "These must come from locale files, not JS constants."
+    )
 
 
 def test_no_hardcoded_processing_steps_in_js():
